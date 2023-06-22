@@ -1,0 +1,48 @@
+BootStrap: debootstrap
+OSVersion: focal
+MirrorURL: http://us.archive.ubuntu.com/ubuntu/
+
+%files
+    # Tar ball created by README script	
+    EXP.tar.gz
+
+    # CUDA runtime dependences to work around a full CUDA installation
+    libcudart.so.11.0
+    libnvToolsExt.so.1
+
+    # HDF5 runtime dependencies
+    libhdf5_cpp.so.103
+    libhdf5_serial.so.103
+
+%environment
+    # Module location
+    export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+    # DSMC data (symbolically linked to staging directory in README script
+    # and part of tar ball; comment out if DSMC is not compiled)
+    export ATOMIC_DATA_PATH=/usr/local/share/ATOMIC
+    export CHIANTI_DATA=/usr/local/share/CHIANTI_9.0_data
+
+%post
+    echo "Update repositories"
+    apt-get update && apt-get install -y software-properties-common
+    add-apt-repository "deb http://us.archive.ubuntu.com/ubuntu/ focal-updates main restricted"
+    add-apt-repository "deb http://us.archive.ubuntu.com/ubuntu/ focal universe"
+    add-apt-repository "deb http://us.archive.ubuntu.com/ubuntu/ focal-updates universe"
+
+    echo "Installing required packages"
+    apt-get update && apt-get install -y bzip2 libboost-dev libvtk7.1 libeigen3-dev libyaml-cpp-dev libopenmpi-dev libboost-filesystem1.71.0 libboost-serialization1.71.0 libboost-system1.71.0 libboost-program-options1.71.0 rsync libslurm-dev
+    echo "Installing EXP"
+    cd /usr/local
+    tar xzvf /EXP.tar.gz
+
+    echo "Copy CUDA runtime libraries from current installation"
+    mv /libcudart.so.11.0 /libnvToolsExt.so.1 /usr/local/lib
+
+    echo "Copy HDF5 runtime libraries from current installation"
+    mv /libhdf5_cpp.so.103 /libhdf5_serial.so.103 /usr/local/lib
+
+%runscript
+    echo "Running EXP"
+    echo "Arguments received: $*"
+    echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+    exec exp "$@"

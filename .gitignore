@@ -1,0 +1,6 @@
+# hide emacs save files
+*~
+
+# hide image files
+*.sif
+
