@@ -15,6 +15,17 @@ Currently, we only have Ubuntu/jammy and Ubuntu/focal.  But these can
 be easily adapted and modified for your needs.  Please contribute your
 recipes for other OS containers to help out others.
 
+## Usage notes
+
+The image has `exp` as its run executable.  This allows you to run EXP from OpenMPI.  For example, suppose that you want to run the `DiskHaloA` example from `EXP-examples`.  Assume that this directory is `/data/DiskHaloA`.  Then you can launch EXP wit the command:
+```
+mpirun apptainer run --bind /data --home /data/DiskHaloA /path/to/EXP.sif
+```
+
+Before doing this, you will need to modify `config.yml` as follows:
+- Change the `ldlibdir` option to `/usr/local/lib/user`
+- Change the `outdir` option to `/data/DiskHaloA`
+
 ## Some notes on the build scripts
 
 1. Change your CMake install directory to point to a staging directory.  In the scripts, I use `/home/weinberg/stage`.  You can change this to suit yourself, of course.
