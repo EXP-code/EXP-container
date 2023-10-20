@@ -14,6 +14,6 @@ the container.
 | Script                    | Description |
 | ---                       | ---         |
 | exp-gnu-openmpi.py        | Create the cpu+gpu SIF image for 22.04 |
-| exp-gnu-openmpi-public.py | Create the cpu+gpu SIF image for 22.04 for public EXP repo|
+| exp-gnu-openmpi-public.py | Create the cpu+gpu SIF image for 22.04 for *future* public release |
 | Singularity.def           | Sample definition file |
 

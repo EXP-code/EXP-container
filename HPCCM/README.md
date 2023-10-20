@@ -29,6 +29,6 @@ Each directory describes a _flavor_ for the container image.
 
 | Directory    | Contents |
 | ---          | ---      |
-| Ubuntu       | Scripts to create the cpu+gpu SIF image for 22.04
+| Ubuntu       | Scripts to create the cpu+gpu SIF image for 22.04 |
 
 Please do contribute recipes for other flavors and platforms.
