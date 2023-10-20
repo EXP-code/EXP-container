@@ -23,6 +23,11 @@ configuration details in the recipe file.  See the [HPCCM
 documentation](https://github.com/NVIDIA/hpc-container-maker/blob/master/docs/getting_started.md)
 for more details.
 
+It might be useful to make writable container for debugging the recipe
+as follows:
+- sudo apptainer build --sandbox EXP/ Singularity.def
+
+
 ## Organization
 
 Each directory describes a _flavor_ for the container image.

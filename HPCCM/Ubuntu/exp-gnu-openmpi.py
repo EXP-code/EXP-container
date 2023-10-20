@@ -7,7 +7,7 @@ Contents:
   * FFTW version 3.3.8
   * GNU compilers (upstream)
   * HDF5 version 1.10.7
-  * OpenMPI version 4.1.3
+  * OpenMPI version 4.1.3 with PMIX, PMI2, and Infiniband support
   * Python 2 and 3 (upstream)
   * CMake (upstream)
   * Ubuntu 22.04 (if you want another image, you will need to update
@@ -60,8 +60,20 @@ Stage0 += compiler
 # Open Fabrics
 Stage0 += mlnx_ofed()
 
+# PMIX & PMI2
+Stage0 += pmix(toolchain=compiler.toolchain,
+               ospackages=['libhwloc-dev', 'libev-libevent-dev'])
+
+Stage0 += slurm_pmi2(toolchain=compiler.toolchain)
+
 # OpenMPI
-Stage0 += openmpi(version='4.1.3', infiniband=True, toolchain=compiler.toolchain)
+Stage0 += openmpi(version='4.1.3', 
+                  pmix=True, pmi='/usr/local/slurm-pmi2', 
+                  ospackages=['file', 'hwloc', 'libslurm-dev'],
+                  with_slurm=True,
+                  infiniband=True,
+                  cuda=True,
+                  toolchain=compiler.toolchain)
 
 # FFTW
 Stage0 += fftw(version='3.3.8', mpi=True, toolchain=compiler.toolchain)
@@ -106,7 +118,9 @@ Stage1 += baseimage(image=runtime_image)
 
 Stage1 += Stage0.runtime(_from='devel')
 
-Stage1 += apt_get(ospackages=['libslurm37'])
+Stage1 += compiler
+
+Stage1 += apt_get(ospackages=['libpython3.10-dev', 'libslurm37', 'openmpi-bin', 'less'])
 
 # Install EXP into the runtime image
 #
@@ -124,4 +138,4 @@ Stage1 += environment(variables={'LD_LIBRARY_PATH': '/usr/local/EXP/lib:$LD_LIBR
 # Some packages needed or useful for running pyEXP
 #
 Stage1 += environment(variables={'PYTHONPATH': '/usr/local/EXP/lib/python3.10/site-packages:${PYTHONPATH}'})
-Stage1 += pip(packages=['numpy', 'astropy', 'matplotlib', 'mpi4py', 'PyYAML'], pip='pip3')
+Stage1 += pip(packages=['numpy', 'astropy', 'matplotlib', 'mpi4py', 'PyYAML'], pip='pip3', upgrade=True, ospackages=['python3-pip', 'python3-setuptools', 'python3-wheel', 'python3-pip-whl'])
