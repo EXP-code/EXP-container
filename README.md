@@ -10,4 +10,4 @@ Each directory describes a _flavor_ for the container image.
 | Ubuntu       | Scripts to create a cpu and a cpu+gpu SIF image           |
 | Ubuntu/focal | A definition file that works with 20.04 packages          |
 | Ubuntu/jammy | A definition file that works with 22.04 packages          |
-| HPCCM        | HPC Container Maker recipe for building a container image |
+| HPCCM        | HPC Container Maker recipe for building EXP *inside* of a container image |
