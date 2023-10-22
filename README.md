@@ -11,3 +11,10 @@ Each directory describes a _flavor_ for the container image.
 | Ubuntu/focal | A definition file that works with 20.04 packages          |
 | Ubuntu/jammy | A definition file that works with 22.04 packages          |
 | HPCCM        | HPC Container Maker recipe for building EXP *inside* of a container image |
+
+## Notes
+
+For all of these recipes, we recommend that you match the container
+version of MPI and Cuda to the host versions.  For example, we have
+found that even differences in the micro versions for OpenMPI can lead
+to problems.
