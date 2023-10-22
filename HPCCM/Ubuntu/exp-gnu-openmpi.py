@@ -13,7 +13,7 @@ Contents:
   * Ubuntu 22.04 (if you want another image, you will need to update
     this configuration for the dependent packages.  Please add the appropriate
     usearg switches and contribute this back to the EXP repo, if you would.)
-  * Ubuntu packages: libeigen3-dev libslurm37 libslurm-dev wget git tar
+  * Ubuntu packages: libeigen3-dev wget git tar
 
 Build notes:
 
@@ -85,9 +85,9 @@ Stage0 += hdf5(version='1.10.7', toolchain=compiler.toolchain)
 Stage0 += cmake(eula=True)
 
 # Get additional packages
-Stage0 += apt_get(ospackages=['libeigen3-dev', 'libslurm37', 'libslurm-dev',
-                              'libpng-dev', 'libvtk7-dev', 'python3-dev',
-                              'wget', 'git', 'tar'])
+Stage0 += apt_get(ospackages=['libeigen3-dev', 'libpng-dev',
+                              'libvtk7-dev', 'python3-dev', 'wget',
+                              'git', 'tar'])
 
 # Get EXP from Github (workaround: tar up the git repo first)
 Stage0 += copy(src='/home/weinberg/Downloads/EXP.tar.gz', dest='/')
@@ -104,7 +104,7 @@ Stage0 += shell(commands=['cd /', 'tar xf EXP.tar.gz'])
 Stage0 += shell(commands=['cd /EXP',
                           'git config --global --add safe.directory "*"',
                           'mkdir build', 'cd build',
-                          'cmake -DCMAKE_BUILD_TYPE=Release -DCUDA_USE_STATIC_CUDA_RUNTIME=off -DENABLE_CUDA=YES -DENABLE_USER=YES -DENABLE_PNG=NO -DENABLE_VTK=NO -DEigen3_DIR=/usr/share/eigen3/cmake -DFFTW_ROOT=/usr/local/fftw -DVTK_USE_FILE=/usr/lib/cmake/vtk-7.1 -DCMAKE_INSTALL_PREFIX=/usr/local/EXP -Wno-dev ..'])
+                          'cmake -DCMAKE_BUILD_TYPE=Release -DCUDA_USE_STATIC_CUDA_RUNTIME=off -DENABLE_CUDA=YES -DENABLE_USER=YES -DENABLE_PNG=NO -DENABLE_SLURM=NO -DENABLE_VTK=NO -DEigen3_DIR=/usr/share/eigen3/cmake -DFFTW_ROOT=/usr/local/fftw -DVTK_USE_FILE=/usr/lib/cmake/vtk-7.1 -DCMAKE_INSTALL_PREFIX=/usr/local/EXP -Wno-dev ..'])
 
 # Finally, build and install EXP
 #
@@ -120,7 +120,7 @@ Stage1 += Stage0.runtime(_from='devel')
 
 Stage1 += compiler
 
-Stage1 += apt_get(ospackages=['libpython3.10-dev', 'libslurm37', 'openmpi-bin', 'less'])
+Stage1 += apt_get(ospackages=['libpython3.10-dev', 'openmpi-bin', 'less'])
 
 # Install EXP into the runtime image
 #

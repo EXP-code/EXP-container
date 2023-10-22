@@ -13,7 +13,7 @@ Contents:
   * Ubuntu 22.04 (if you want another image, you will need to update
     this configuration for the dependent packages.  Please add the appropriate
     usearg switches and contribute this back to the EXP repo, if you would.)
-  * Ubuntu packages: libeigen3-dev libslurm37 libslurm-dev wget git tar
+  * Ubuntu packages: libeigen3-dev wget git tar
 
 Build notes:
 
@@ -85,9 +85,9 @@ Stage0 += hdf5(version='1.10.7', toolchain=compiler.toolchain)
 Stage0 += cmake(eula=True)
 
 # Get additional packages
-Stage0 += apt_get(ospackages=['libeigen3-dev', 'libslurm37', 'libslurm-dev',
-                              'libpng-dev', 'libvtk7-dev', 'python3-dev',
-                              'wget', 'git', 'tar'])
+Stage0 += apt_get(ospackages=['libeigen3-dev', 'libpng-dev',
+                              'libvtk7-dev', 'python3-dev', 'wget',
+                              'git', 'tar'])
 
 # When the repository is public, we should be able to use the cmake
 # recipe below after adjusting the url.  Note: this has not been
@@ -102,6 +102,7 @@ Stage0 += generic_cmake(
                 '-D CUDA_USE_STATIC_CUDA_RUNTIME=off',
                 '-D ENABLE_CUDA=YES',
                 '-D ENABLE_USER=YES',
+                '-D ENABLE_SLURM=NO',
                 '-D ENABLE_PNG=NO',
                 '-D ENABLE_VTK=NO',
                 '-D Eigen3_DIR=/usr/share/eigen3/cmake'
@@ -127,7 +128,7 @@ Stage1 += Stage0.runtime(_from='devel')
 
 Stage1 += compiler
 
-Stage1 += apt_get(ospackages=['libpython3.10-dev', 'libslurm37', 'openmpi-bin', 'less'])
+Stage1 += apt_get(ospackages=['libpython3.10-dev', 'openmpi-bin', 'less'])
 
 # Install EXP into the runtime image
 #

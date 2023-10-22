@@ -14,7 +14,13 @@ Each directory describes a _flavor_ for the container image.
 
 ## Notes
 
-For all of these recipes, we recommend that you match the container
-version of MPI and Cuda to the host versions.  For example, we have
-found that even differences in the micro versions for OpenMPI can lead
-to problems.
+- For all of these recipes, we recommend that you match the container
+  version of MPI and Cuda to the host versions.  For example, we have
+  found that even differences in the micro versions for OpenMPI can
+  lead to problems.
+
+- EXP has automatic slurm support built in, but this is not always
+  successful from inside the container.  There is no significantly
+  loss of functionality by disabling this in CMake using
+  `-DENABLE_SLURM=OFF`.
+  
