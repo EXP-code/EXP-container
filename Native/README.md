@@ -12,5 +12,5 @@ Each directory describes a _flavor_ for the container image.
 | Ubuntu       | Scripts to create a cpu and a cpu+gpu SIF image           |
 | Ubuntu/focal | A definition file that works with 20.04 packages          |
 | Ubuntu/jammy | A definition file that works with 22.04 packages          |
-| CentOs       | A definition file for CentOS 7/8/9. Nothing so far.	   |
+| CentOS       | A definition file for CentOS 7/8/9. Nothing so far.	   |
 

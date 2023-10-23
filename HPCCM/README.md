@@ -34,6 +34,7 @@ Each directory describes a _flavor_ for the container image.
 
 | Directory    | Contents |
 | ---          | ---      |
-| Ubuntu       | Scripts to create the cpu+gpu SIF image for 22.04 |
+| Ubuntu       | Recipe scripts to create the cpu+gpu SIF image for 22.04 |
+| CentOS       | Recipe scripts for CentOS 7/8/9. Nothing so far.         |
 
 Please do contribute recipes for other flavors and platforms.
