@@ -7,6 +7,10 @@ provide examples for two strategies:
 2. *HPCCM* - EXP is built inside of the containr using NVidia HPC
    Container Maker
 
+These recipes are still _experimental_.  Please help us make these
+better by posting issues on the GitHub repository and contributing
+improvements through PRs.
+
 ## Organization
 
 | Directory    | Contents |
@@ -31,3 +35,4 @@ provide examples for two strategies:
   successfully run an Ubuntu 22.04 container on a CentOS8-based
   cluster.  Please consider contributing back any successful variants
   for other Linux distributions
+  
