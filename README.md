@@ -11,7 +11,7 @@ provide examples for two strategies:
 
 | Directory    | Contents |
 | ---          | ---      |
-| Native       | Apptainer definition files for various flavors            |
+| Native       | Apptainer definition files for various flavors |
 | HPCCM        | HPC Container Maker recipe for building EXP *inside* of a container image |
 
 ## Notes
@@ -21,10 +21,11 @@ provide examples for two strategies:
   found that even differences in the micro versions for OpenMPI can
   lead to problems.
 
-- EXP has automatic slurm support built in, but this is not always
-  successful from inside the container.  There is no significantly
-  loss of functionality by disabling this in CMake using
-  `-DENABLE_SLURM=OFF`.
+- EXP uses Slurm to detect remaining wall-clock time and terminate
+  smoothly before exceeding the allocated time limit.  However, system
+  slurm access is not always successful from inside the container.
+  There is no significantly loss of functionality by disabling this in
+  CMake using `-DENABLE_SLURM=OFF`.
 
 - All examples have been built in the Ubuntu environment.  However we
   successfully run an Ubuntu 22.04 container on a CentOS8-based
