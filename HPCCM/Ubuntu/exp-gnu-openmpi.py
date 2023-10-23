@@ -89,26 +89,34 @@ Stage0 += apt_get(ospackages=['libeigen3-dev', 'libpng-dev',
                               'libvtk7-dev', 'python3-dev', 'wget',
                               'git', 'tar'])
 
-# Get EXP from Github (workaround: tar up the git repo first)
-Stage0 += copy(src='/home/weinberg/Downloads/EXP.tar.gz', dest='/')
-Stage0 += shell(commands=['cd /', 'tar xf EXP.tar.gz'])
-
-# When the repository is public, we should be able to do a simple git
-# clone here.  At this point, you will need to 'git clone' locally and
-# pack up the resulting directory for staging.
+# When the repository is public, we should be able to use the cmake
+# recipe below after adjusting the url.  Note: this has not been
+# tested.
 
 # Create a build directory and configure EXP.  The options below
 # should give you all that you need for most cases. Add additional
 # CMake options as needed.
-
-Stage0 += shell(commands=['cd /EXP',
-                          'git config --global --add safe.directory "*"',
-                          'mkdir build', 'cd build',
-                          'cmake -DCMAKE_BUILD_TYPE=Release -DCUDA_USE_STATIC_CUDA_RUNTIME=off -DENABLE_CUDA=YES -DENABLE_USER=YES -DENABLE_PNG=NO -DENABLE_SLURM=NO -DENABLE_VTK=NO -DEigen3_DIR=/usr/share/eigen3/cmake -DFFTW_ROOT=/usr/local/fftw -DVTK_USE_FILE=/usr/lib/cmake/vtk-7.1 -DCMAKE_INSTALL_PREFIX=/usr/local/EXP -Wno-dev ..'])
-
-# Finally, build and install EXP
 #
-Stage0 += shell(commands=['cd /EXP/build', 'make -j4', 'make install'])
+Stage0 += generic_cmake(
+    cmake_opts=['-D CMAKE_BUILD_TYPE=Release',
+                '-D CUDA_USE_STATIC_CUDA_RUNTIME=off',
+                '-D ENABLE_CUDA=YES',
+                '-D ENABLE_USER=YES',
+                '-D ENABLE_SLURM=NO',
+                '-D ENABLE_PNG=NO',
+                '-D ENABLE_VTK=NO',
+                '-D Eigen3_DIR=/usr/share/eigen3/cmake',
+                '-D FFTW_ROOT=/usr/local/fftw',
+                '-D CMAKE_INSTALL_PREFIX=/usr/local/EXP'],
+#    preconfigure=['git submodule update --init --recursive'],
+    prefix='/usr/local/EXP',
+    runtime_environment={
+        'LD_LIBRARY_PATH': '/usr/local/EXP/lib:${LD_LIBRARY_PATH}',
+        'LIBRARY_PATH': '/usr/local/EXP/lib:${LIBRARY_PATH}',
+        'PATH': '/usr/local/EXP/bin:${PATH}'},
+    package='/home/weinberg/Downloads/EXP.tar.gz'
+#    repository='https://github.com/EXP-code/EXP.git'
+)
 
 ################
 # Runtime image

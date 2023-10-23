@@ -1,15 +1,17 @@
 # EXP-apptainer
-Recipes for creating Apptainer/Singularity containers for EXP
+
+Recipes for creating Apptainer/Singularity containers for EXP.  We
+provide examples for two strategies:
+1. *Native* - EXP is built from source on the host and installed in
+   the container
+2. *HPCCM* - EXP is built inside of the containr using NVidia HPC
+   Container Maker
 
 ## Organization
 
-Each directory describes a _flavor_ for the container image.
-
 | Directory    | Contents |
 | ---          | ---      |
-| Ubuntu       | Scripts to create a cpu and a cpu+gpu SIF image           |
-| Ubuntu/focal | A definition file that works with 20.04 packages          |
-| Ubuntu/jammy | A definition file that works with 22.04 packages          |
+| Native       | Apptainer definition files for various flavors            |
 | HPCCM        | HPC Container Maker recipe for building EXP *inside* of a container image |
 
 ## Notes
@@ -23,4 +25,8 @@ Each directory describes a _flavor_ for the container image.
   successful from inside the container.  There is no significantly
   loss of functionality by disabling this in CMake using
   `-DENABLE_SLURM=OFF`.
-  
+
+- All examples have been built in the Ubuntu environment.  However we
+  successfully run an Ubuntu 22.04 container on a CentOS8-based
+  cluster.  Please consider contributing back any successful variants
+  for other Linux distributions
