@@ -1,34 +1,42 @@
 # EXP-apptainer
-Recipes for creating Apptainer/Singularity containers for EXP
+
+Recipes for creating Apptainer/Singularity containers for EXP.  We
+provide examples for two strategies:
+1. *Native* - EXP is built from source on the host and installed in
+   the container
+2. *HPCCM* - EXP is built inside of the containr using NVidia HPC
+   Container Maker
+
+These recipes are still _experimental_.  Please help us make these
+better by posting issues on the GitHub repository and contributing
+improvements through PRs.
 
 ## Organization
 
-Each directory describes a _flavor_ for the container image.
-
 | Directory    | Contents |
 | ---          | ---      |
-| Ubuntu       | Scripts to create a cpu and a cpu+gpu SIF image
-| Ubuntu/focal | A definition file that works with 20.04 packages
-| Ubuntu/jammy | A definition file that works with 22.04 packages
+| Native       | Apptainer definition files for various flavors |
+| HPCCM        | HPC Container Maker recipe for building EXP *inside* of a container image |
 
-Currently, we only have Ubuntu/jammy and Ubuntu/focal support.  But these can be easily adapted and modified for your needs.  Please contribute your recipes and expertise with new features and for other OS containers to help out others.
+## Notes
 
-## Usage notes
+- For all of these recipes, we recommend that you match the container
+  version of MPI and Cuda to the host versions.  For example, we have
+  found that even differences in the micro versions for OpenMPI can
+  lead to problems.
 
-The image has `exp` as its run executable.  This allows you to run EXP from OpenMPI.  For example, suppose that you want to run the `DiskHaloA` example from `EXP-examples`.  Assume that this directory is `/data/DiskHaloA`.  Then you can launch EXP wit the command:
-```
-mpirun apptainer run --bind /data --home /data/DiskHaloA /path/to/EXP.sif
-```
+- EXP uses Slurm to detect remaining wall-clock time and terminate
+  smoothly before exceeding the allocated time limit.  However, system
+  slurm access is not always successful from inside the container.
+  There is no significantly loss of functionality by disabling this in
+  CMake using `-DENABLE_SLURM=OFF`.
 
-Before doing this, you will need to modify `config.yml` as follows:
-- Change the `ldlibdir` option to `/usr/local/lib/user`
-- Change the `outdir` option to `/data/DiskHaloA`
+- All examples have been built in the Ubuntu environment.  However we
+  successfully run an Ubuntu 22.04 container on a CentOS8-based
+  cluster.  Please consider contributing back any successful variants
+  for other Linux distributions
 
-## Some notes on the build scripts
-
-1. Change your CMake install directory to point to a staging directory.  In the scripts, I use `/home/weinberg/stage`.  You can change this to suit yourself, of course.
-2. Every file in the staging directory will be copied to `/usr/local` in the container.  This is a convenient way to get needed files into your container.  You can copy or link other files into the `/usr/local` in the container to suite your specific needs.
-4. EXP depends on a few libraries for CUDA and HDF5 support.  The script copies them directly rather than loading the full package and its dependencies for each of these.  You may need to tweak this when porting to a new OS version.
-5. These scripts assume you are using Apptainer but they will also work for Singularity.  If you are using Sylabs SingularityCE, change the final command from `apptainer` to `singularity`.
-6. Also, in that final command, change `jammy` to `focal`, if you want 20.04 rather than 22.04.
-7. The script is intended to be run from the OS-specific directory; in this case `Ubuntu`.
+- The pyEXP build in the HPCCM container has been successfully tested
+  with `mpi4py`, `numpy` and `matplotlib`.  `Astropy` has been
+  included but not tested.
+  
