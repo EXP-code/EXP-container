@@ -7,13 +7,13 @@
 #   * FFTW version 3.3.8
 #   * GNU compilers (upstream)
 #   * HDF5 version 1.10.7
-#   * OpenMPI version 4.1.3
+#   * OpenMPI version 4.1.3 with PMIX, PMI2, and Infiniband support
 #   * Python 2 and 3 (upstream)
 #   * CMake (upstream)
 #   * Ubuntu 22.04 (if you want another image, you will need to update
 #     this configuration for the dependent packages.  Please add the appropriate
 #     usearg switches and contribute this back to the EXP repo, if you would.)
-#   * Ubuntu packages: libeigen3-dev libslurm37 libslurm-dev wget git tar
+#   * Ubuntu packages: libeigen3-dev wget git tar
 # 
 # Build notes:
 # 
@@ -77,28 +77,66 @@ Stage: devel
         librdmacm1
     rm -rf /var/lib/apt/lists/*
 
-# OpenMPI version 4.1.3
+# PMIX version 4.1.2
+%post
+    apt-get update -y
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        libev-libevent-dev \
+        libhwloc-dev
+    rm -rf /var/lib/apt/lists/*
+%post
+    cd /
+    mkdir -p /src && wget -q -nc --no-check-certificate -P /src https://github.com/openpmix/openpmix/releases/download/v4.1.2/pmix-4.1.2.tar.gz
+    mkdir -p /src && tar -x -f /src/pmix-4.1.2.tar.gz -C /src -z
+    cd /src/pmix-4.1.2 &&  CC=gcc CFLAGS='-march=x86-64 -mtune=generic' CXX=g++ CXXFLAGS='-march=x86-64 -mtune=generic' F77=gfortran F90=gfortran FC=gfortran FCFLAGS='-march=x86-64 -mtune=generic' FFLAGS='-march=x86-64 -mtune=generic' ./configure --prefix=/usr/local/pmix
+    make -j$(nproc)
+    make -j$(nproc) install
+    rm -rf /src/pmix-4.1.2 /src/pmix-4.1.2.tar.gz
+%environment
+    export CPATH=/usr/local/pmix/include:$CPATH
+    export LD_LIBRARY_PATH=/usr/local/pmix/lib:$LD_LIBRARY_PATH
+    export PATH=/usr/local/pmix/bin:$PATH
+%post
+    export CPATH=/usr/local/pmix/include:$CPATH
+    export LD_LIBRARY_PATH=/usr/local/pmix/lib:$LD_LIBRARY_PATH
+    export PATH=/usr/local/pmix/bin:$PATH
+
+# SLURM PMI2 version 21.08.8
 %post
     apt-get update -y
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         bzip2 \
         file \
-        hwloc \
-        libnuma-dev \
         make \
-        openssh-client \
         perl \
         tar \
         wget
     rm -rf /var/lib/apt/lists/*
 %post
     cd /
-    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://www.open-mpi.org/software/ompi/v4.1/downloads/openmpi-4.1.3.tar.bz2
-    mkdir -p /var/tmp && tar -x -f /var/tmp/openmpi-4.1.3.tar.bz2 -C /var/tmp -j
-    cd /var/tmp/openmpi-4.1.3 &&  CC=gcc CXX=g++ F77=gfortran F90=gfortran FC=gfortran ./configure --prefix=/usr/local/openmpi --disable-getpwuid --enable-orterun-prefix-by-default --with-cuda --with-verbs
+    mkdir -p /src && wget -q -nc --no-check-certificate -P /src https://download.schedmd.com/slurm/slurm-21.08.8.tar.bz2
+    mkdir -p /src && tar -x -f /src/slurm-21.08.8.tar.bz2 -C /src -j
+    cd /src/slurm-21.08.8 &&  CC=gcc CFLAGS='-march=x86-64 -mtune=generic' CXX=g++ CXXFLAGS='-march=x86-64 -mtune=generic' F77=gfortran F90=gfortran FC=gfortran FCFLAGS='-march=x86-64 -mtune=generic' FFLAGS='-march=x86-64 -mtune=generic' ./configure --prefix=/usr/local/slurm-pmi2
+    cd /src/slurm-21.08.8
+    make -C contribs/pmi2 install
+    rm -rf /src/slurm-21.08.8 /src/slurm-21.08.8.tar.bz2
+
+# OpenMPI version 4.1.3
+%post
+    apt-get update -y
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        file \
+        hwloc \
+        libslurm-dev
+    rm -rf /var/lib/apt/lists/*
+%post
+    cd /
+    mkdir -p /src && wget -q -nc --no-check-certificate -P /src https://www.open-mpi.org/software/ompi/v4.1/downloads/openmpi-4.1.3.tar.bz2
+    mkdir -p /src && tar -x -f /src/openmpi-4.1.3.tar.bz2 -C /src -j
+    cd /src/openmpi-4.1.3 &&  CC=gcc CFLAGS='-march=x86-64 -mtune=generic' CXX=g++ CXXFLAGS='-march=x86-64 -mtune=generic' F77=gfortran F90=gfortran FC=gfortran FCFLAGS='-march=x86-64 -mtune=generic' FFLAGS='-march=x86-64 -mtune=generic' ./configure --prefix=/usr/local/openmpi --disable-getpwuid --enable-orterun-prefix-by-default --with-cuda --with-pmi=/usr/local/slurm-pmi2 --with-pmix --with-slurm --with-verbs
     make -j$(nproc)
     make -j$(nproc) install
-    rm -rf /var/tmp/openmpi-4.1.3 /var/tmp/openmpi-4.1.3.tar.bz2
+    rm -rf /src/openmpi-4.1.3 /src/openmpi-4.1.3.tar.bz2
 %environment
     export LD_LIBRARY_PATH=/usr/local/openmpi/lib:$LD_LIBRARY_PATH
     export PATH=/usr/local/openmpi/bin:$PATH
@@ -116,12 +154,12 @@ Stage: devel
     rm -rf /var/lib/apt/lists/*
 %post
     cd /
-    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp ftp://ftp.fftw.org/pub/fftw/fftw-3.3.8.tar.gz
-    mkdir -p /var/tmp && tar -x -f /var/tmp/fftw-3.3.8.tar.gz -C /var/tmp -z
-    cd /var/tmp/fftw-3.3.8 &&  CC=gcc CXX=g++ F77=gfortran F90=gfortran FC=gfortran ./configure --prefix=/usr/local/fftw --enable-mpi --enable-openmp --enable-shared --enable-sse2 --enable-threads
+    mkdir -p /src && wget -q -nc --no-check-certificate -P /src ftp://ftp.fftw.org/pub/fftw/fftw-3.3.8.tar.gz
+    mkdir -p /src && tar -x -f /src/fftw-3.3.8.tar.gz -C /src -z
+    cd /src/fftw-3.3.8 &&  CC=gcc CFLAGS='-march=x86-64 -mtune=generic' CXX=g++ CXXFLAGS='-march=x86-64 -mtune=generic' F77=gfortran F90=gfortran FC=gfortran FCFLAGS='-march=x86-64 -mtune=generic' FFLAGS='-march=x86-64 -mtune=generic' ./configure --prefix=/usr/local/fftw --enable-mpi --enable-openmp --enable-shared --enable-sse2 --enable-threads
     make -j$(nproc)
     make -j$(nproc) install
-    rm -rf /var/tmp/fftw-3.3.8 /var/tmp/fftw-3.3.8.tar.gz
+    rm -rf /src/fftw-3.3.8 /src/fftw-3.3.8.tar.gz
 %environment
     export LD_LIBRARY_PATH=/usr/local/fftw/lib:$LD_LIBRARY_PATH
 %post
@@ -139,12 +177,12 @@ Stage: devel
     rm -rf /var/lib/apt/lists/*
 %post
     cd /
-    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.7/src/hdf5-1.10.7.tar.bz2
-    mkdir -p /var/tmp && tar -x -f /var/tmp/hdf5-1.10.7.tar.bz2 -C /var/tmp -j
-    cd /var/tmp/hdf5-1.10.7 &&  CC=gcc CXX=g++ F77=gfortran F90=gfortran FC=gfortran ./configure --prefix=/usr/local/hdf5 --enable-cxx --enable-fortran
+    mkdir -p /src && wget -q -nc --no-check-certificate -P /src http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.7/src/hdf5-1.10.7.tar.bz2
+    mkdir -p /src && tar -x -f /src/hdf5-1.10.7.tar.bz2 -C /src -j
+    cd /src/hdf5-1.10.7 &&  CC=gcc CFLAGS='-march=x86-64 -mtune=generic' CXX=g++ CXXFLAGS='-march=x86-64 -mtune=generic' F77=gfortran F90=gfortran FC=gfortran FCFLAGS='-march=x86-64 -mtune=generic' FFLAGS='-march=x86-64 -mtune=generic' ./configure --prefix=/usr/local/hdf5 --enable-cxx --enable-fortran
     make -j$(nproc)
     make -j$(nproc) install
-    rm -rf /var/tmp/hdf5-1.10.7 /var/tmp/hdf5-1.10.7.tar.bz2
+    rm -rf /src/hdf5-1.10.7 /src/hdf5-1.10.7.tar.bz2
 %environment
     export CPATH=/usr/local/hdf5/include:$CPATH
     export HDF5_DIR=/usr/local/hdf5
@@ -167,10 +205,10 @@ Stage: devel
     rm -rf /var/lib/apt/lists/*
 %post
     cd /
-    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1-linux-x86_64.sh
+    mkdir -p /src && wget -q -nc --no-check-certificate -P /src https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1-linux-x86_64.sh
     mkdir -p /usr/local
-    /bin/sh /var/tmp/cmake-3.25.1-linux-x86_64.sh --prefix=/usr/local --skip-license
-    rm -rf /var/tmp/cmake-3.25.1-linux-x86_64.sh
+    /bin/sh /src/cmake-3.25.1-linux-x86_64.sh --prefix=/usr/local --skip-license
+    rm -rf /src/cmake-3.25.1-linux-x86_64.sh
 %environment
     export PATH=/usr/local/bin:$PATH
 %post
@@ -182,35 +220,22 @@ Stage: devel
         git \
         libeigen3-dev \
         libpng-dev \
-        libslurm-dev \
-        libslurm37 \
         libvtk7-dev \
         python3-dev \
         tar \
         wget
     rm -rf /var/lib/apt/lists/*
 
+# /home/weinberg/Downloads/EXP.tar.gz
 %files
-    /home/weinberg/Downloads/EXP.tar.gz /
-
+    /home/weinberg/Downloads/EXP.tar.gz /src/EXP.tar.gz
 %post
     cd /
-    cd /
-    tar xf EXP.tar.gz
-
-%post
-    cd /
-    cd /EXP
-    git config --global --add safe.directory "*"
-    mkdir build
-    cd build
-    cmake -DCMAKE_BUILD_TYPE=Release -DCUDA_USE_STATIC_CUDA_RUNTIME=off -DENABLE_CUDA=YES -DENABLE_USER=YES -DENABLE_PNG=NO -DENABLE_VTK=NO -DEigen3_DIR=/usr/share/eigen3/cmake -DFFTW_ROOT=/usr/local/fftw -DVTK_USE_FILE=/usr/lib/cmake/vtk-7.1 -DCMAKE_INSTALL_PREFIX=/usr/local/EXP -Wno-dev ..
-
-%post
-    cd /
-    cd /EXP/build
-    make -j4
-    make install
+    mkdir -p /src && tar -x -f /src/EXP.tar.gz -C /src -z
+    mkdir -p /src/EXP/build && cd /src/EXP/build && cmake -DCMAKE_INSTALL_PREFIX=/usr/local/EXP -D CMAKE_BUILD_TYPE=Release -D CUDA_USE_STATIC_CUDA_RUNTIME=off -D ENABLE_CUDA=YES -D ENABLE_USER=YES -D ENABLE_SLURM=NO -D ENABLE_PNG=NO -D ENABLE_VTK=NO -D Eigen3_DIR=/usr/share/eigen3/cmake -D FFTW_ROOT=/usr/local/fftw -D CMAKE_INSTALL_PREFIX=/usr/local/EXP /src/EXP
+    cmake --build /src/EXP/build --target all -- -j$(nproc)
+    cmake --build /src/EXP/build --target install -- -j$(nproc)
+    rm -rf /src/EXP /src/EXP.tar.gz
 
 BootStrap: docker
 From: nvcr.io/nvidia/cuda:11.7.1-runtime-ubuntu22.04
@@ -258,6 +283,28 @@ From: nvcr.io/nvidia/cuda:11.7.1-runtime-ubuntu22.04
         librdmacm1
     rm -rf /var/lib/apt/lists/*
 
+# PMIX
+%post
+    apt-get update -y
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        libevent-2.* \
+        libevent-pthreads-2.*
+    rm -rf /var/lib/apt/lists/*
+%files from devel
+    /usr/local/pmix /usr/local/pmix
+%environment
+    export CPATH=/usr/local/pmix/include:$CPATH
+    export LD_LIBRARY_PATH=/usr/local/pmix/lib:$LD_LIBRARY_PATH
+    export PATH=/usr/local/pmix/bin:$PATH
+%post
+    export CPATH=/usr/local/pmix/include:$CPATH
+    export LD_LIBRARY_PATH=/usr/local/pmix/lib:$LD_LIBRARY_PATH
+    export PATH=/usr/local/pmix/bin:$PATH
+
+# SLURM PMI2
+%files from devel
+    /usr/local/slurm-pmi2 /usr/local/slurm-pmi2
+
 # OpenMPI
 %post
     apt-get update -y
@@ -303,10 +350,32 @@ From: nvcr.io/nvidia/cuda:11.7.1-runtime-ubuntu22.04
     export LIBRARY_PATH=/usr/local/hdf5/lib:$LIBRARY_PATH
     export PATH=/usr/local/hdf5/bin:$PATH
 
+%files from devel
+    /usr/local/EXP /usr/local/EXP
+%environment
+    export LD_LIBRARY_PATH=/usr/local/EXP/lib:${LD_LIBRARY_PATH}
+    export LIBRARY_PATH=/usr/local/EXP/lib:${LIBRARY_PATH}
+    export PATH=/usr/local/EXP/bin:${PATH}
+%post
+    export LD_LIBRARY_PATH=/usr/local/EXP/lib:${LD_LIBRARY_PATH}
+    export LIBRARY_PATH=/usr/local/EXP/lib:${LIBRARY_PATH}
+    export PATH=/usr/local/EXP/bin:${PATH}
+
+# GNU compiler
 %post
     apt-get update -y
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        libslurm37
+        g++ \
+        gcc \
+        gfortran
+    rm -rf /var/lib/apt/lists/*
+
+%post
+    apt-get update -y
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        less \
+        libpython3.10-dev \
+        openmpi-bin
     rm -rf /var/lib/apt/lists/*
 
 %files from devel
@@ -340,9 +409,11 @@ From: nvcr.io/nvidia/cuda:11.7.1-runtime-ubuntu22.04
     apt-get update -y
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         python3-pip \
+        python3-pip-whl \
         python3-setuptools \
         python3-wheel
     rm -rf /var/lib/apt/lists/*
 %post
     cd /
+    pip3 --no-cache-dir install --upgrade pip
     pip3 --no-cache-dir install numpy astropy matplotlib mpi4py PyYAML

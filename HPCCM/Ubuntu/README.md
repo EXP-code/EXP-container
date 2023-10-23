@@ -14,8 +14,8 @@ convenient `repository` option instead.
 
 The 'shell' recipe uses primitive shell commands rather than the more
 portable `generic_cmake()` recipe.  This is a bit of a hack, but it
-works and may be useful for sitauations that require a more complex
-recipe.
+works and may be a useful starting point for sitauations that require
+a more flexible recipe.
 
 ## Contents
 
