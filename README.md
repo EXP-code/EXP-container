@@ -35,4 +35,8 @@ improvements through PRs.
   successfully run an Ubuntu 22.04 container on a CentOS8-based
   cluster.  Please consider contributing back any successful variants
   for other Linux distributions
+
+- The pyEXP build in the HPCCM container has been successfully tested
+  with `mpi4py`, `numpy` and `matplotlib`.  `Astropy` has been
+  included but not tested.
   
