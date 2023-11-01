@@ -109,6 +109,7 @@ Stage0 += generic_cmake(
                 '-D FFTW_ROOT=/usr/local/fftw',
                 '-D CMAKE_INSTALL_PREFIX=/usr/local/EXP'],
 #    preconfigure=['git submodule update --init --recursive'],
+    preconfigure=['git config --global --add safe.directory /src/EXP'],
     prefix='/usr/local/EXP',
     runtime_environment={
         'LD_LIBRARY_PATH': '/usr/local/EXP/lib:${LD_LIBRARY_PATH}',
