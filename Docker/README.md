@@ -1,17 +1,26 @@
 # Docker
 
-We use the HPC Container Maker to generate a Dockerfile from the
-Python recipe.  This container is designed to be run on a workstation
-or laptop, rather than a cluster. Rather than custom build HPC
-libraries for a particular version of OpenMPI and Cuda, we build the
-Docker container using a standard Ubuntu image and repository support
-packages.
+We provide a premade Docker container for Jupyter notebooks and
+Jupyter lab, hosted by the Docker Hub. No building necessary.  All you
+need is the `expbox` script from this directory and `docker`.
 
-You will need Docker installed on your workstation or laptop. See
-installation hints below. I prefer the community edition of Docker but
-the Docker Desktop is available for Linux, Mac OS X, and Windows. The
-Desktop is the preferred path for Windows. Note: the Docker container
-_should_ work for Windows but it is not currently tested.
+If you do not have `docker` installed on your workstation or laptop,
+you will need to do that first. See installation hints below. I prefer
+the community edition of Docker but the Docker Desktop is available
+for Linux, Mac OS X, and Windows. One the desktop is installed, you
+will also have the command-line interface needed by the script or for
+manually running the container.  The Desktop is the preferred
+installation for Windows. Note: the Docker container _should_ work for
+Windows but it is not currently tested.
+
+For those of you that want to make your own Docker image, please see
+[Building a Docker image](#Building-a-Docker-image) below.  We use the
+[HPC Container Maker](https://github.com/NVIDIA/hpc-container-maker)
+to generate a Dockerfile from the Python recipe.  This container is
+designed to be run on a workstation or laptop, rather than a cluster.
+Rather than custom build HPC libraries for a particular version of
+OpenMPI and Cuda, we build the Docker container using a standard
+Ubuntu image and repository support packages.
 
 ## Usage
 
