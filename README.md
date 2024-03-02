@@ -17,7 +17,9 @@ improvements through PRs.
 
 If your main interest is running the Docker container, please take a
 quick look at [Docker](/Docker/README.md) and grab and run the
-[expbox](/Docker/expbox) script.
+[expbox](/Docker/expbox) script. The script will download the latest
+EXP docker image, build a docker container, and run Jupyter or start
+an interactive shell.
 
 ## Organization
 
