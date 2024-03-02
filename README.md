@@ -6,8 +6,9 @@ EXP.  We provide examples for three strategies:
    the container
 2. *HPCCM* - EXP is built inside of the container using NVidia HPC
    Container Maker
-3. *Docker* - A docker image is built using EXP. We provide an HPCCM
-   recipe for the Dockerfile.
+3. *Docker* - A docker image with Jupyter and friends for pyEXP and
+   EXP simulations is available on Docker Hub!  We provide an HPCCM
+   recipe and a Dockerfile for new builds.
 
 These recipes are still _experimental_.  Please help us make these
 better by posting issues on the GitHub repository and contributing
