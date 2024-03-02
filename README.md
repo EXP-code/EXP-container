@@ -1,11 +1,13 @@
 # EXP-container
 
 Recipes for creating Apptainer/Singularity and Docker containers for
-EXP.  We provide examples for two strategies:
+EXP.  We provide examples for three strategies:
 1. *Native* - EXP is built from source on the host and installed in
    the container
-2. *HPCCM* - EXP is built inside of the containr using NVidia HPC
+2. *HPCCM* - EXP is built inside of the container using NVidia HPC
    Container Maker
+3. *Docker* - A docker image is built using EXP. We provide an HPCCM
+   recipe for the Dockerfile.
 
 These recipes are still _experimental_.  Please help us make these
 better by posting issues on the GitHub repository and contributing
