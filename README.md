@@ -1,7 +1,7 @@
-# EXP-apptainer
+# EXP-container
 
-Recipes for creating Apptainer/Singularity containers for EXP.  We
-provide examples for two strategies:
+Recipes for creating Apptainer/Singularity and Docker containers for
+EXP.  We provide examples for two strategies:
 1. *Native* - EXP is built from source on the host and installed in
    the container
 2. *HPCCM* - EXP is built inside of the containr using NVidia HPC
@@ -17,6 +17,7 @@ improvements through PRs.
 | ---          | ---      |
 | Native       | Apptainer definition files for various flavors |
 | HPCCM        | HPC Container Maker recipe for building EXP *inside* of a container image |
+| Docker       | Recipe for building a docker image containing EXP, Jupyter, and standard Python packages |
 
 ## Notes
 
@@ -40,3 +41,5 @@ improvements through PRs.
   with `mpi4py`, `numpy` and `matplotlib`.  `Astropy` has been
   included but not tested.
   
+- The docker container includes an internal MPI installation without
+  Cuda.
