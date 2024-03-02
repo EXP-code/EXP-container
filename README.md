@@ -13,6 +13,12 @@ These recipes are still _experimental_.  Please help us make these
 better by posting issues on the GitHub repository and contributing
 improvements through PRs.
 
+## Quick start
+
+If your main interest is running the Docker container, please take a
+quick look at [Docker](/Docker/README.md) and grab and run the
+[expbox](/Docker/expbox) script.
+
 ## Organization
 
 | Directory    | Contents |
