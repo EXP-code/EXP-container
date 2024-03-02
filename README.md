@@ -13,7 +13,7 @@ These recipes are still _experimental_.  Please help us make these
 better by posting issues on the GitHub repository and contributing
 improvements through PRs.
 
-## Quick start
+## TL;DR Docker quick start
 
 If your main interest is running the Docker container, please take a
 quick look at [Docker](/Docker/README.md) and grab and run the
