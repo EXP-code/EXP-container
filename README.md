@@ -15,11 +15,12 @@ improvements through PRs.
 
 ## TL;DR Docker quick start
 
-If your main interest is running the Docker container, please take a
-quick look at our [Docker README](/Docker/README.md) and grab and run
-the [expbox](/Docker/expbox) script.  The script will download the
-latest EXP docker image, build a docker container, and run Jupyter or
-start an interactive shell.
+If your main interest is running the Docker container, grab and run
+the [expbox](/Docker/expbox) script. Make the script executable and
+put it in your path as usual.  The script will download the latest EXP
+docker image, build a docker container, and run Jupyter or start an
+interactive shell.  Please take a quick look at our [Docker
+README](/Docker/README.md) for more details.
 
 ## Organization
 
