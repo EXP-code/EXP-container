@@ -35,12 +35,13 @@ for Mac OS X and Linux. Alternatively, and recommended: use your
 favorite search engine to find detailed Docker installation
 instructions for your system.
 
-This directory contains a Bash script called `expbox` that runs a
-Docker container to either (1) start Jupyter Notebook or Jupyter Lab;
-or (2) start an interactive terminal session that maybe be used to run
-`exp`. Try `expbox -h` to see the available options.  This script will
-automatically download a prebuilt Docker image from the Docker Hub and
-start the container.  Then you should be up and running.
+This directory contains a Bash script called [expbox](/Docker/expbox)
+that runs a Docker container to either (1) start Jupyter Notebook or
+Jupyter Lab; or (2) start an interactive terminal session that maybe
+be used to run `exp`. Try `expbox -h` to see the available options.
+This script will automatically download a prebuilt Docker image from
+the Docker Hub and start the container.  Then you should be up and
+running.
 
 ### Tips and hints for running EXP in Docker
 
