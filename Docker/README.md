@@ -124,7 +124,7 @@ sudo adduser <user> docker
 
 to allow docker commands to be run *without* sudo.
 
-There are installation alternatives to Cannonical's repository.
+There are installation alternatives to Canonical's repository.
 Docker.com provides a Docker Desktop package. Also, you can use the
 docker.com PPA for the latest, greatest community edition as follows.
 First, update your existing list of packages and install a few
