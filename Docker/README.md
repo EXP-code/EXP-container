@@ -2,7 +2,8 @@
 
 We provide a premade Docker container for Jupyter notebooks and
 Jupyter lab, hosted by the Docker Hub. No building necessary.  All you
-need is the `expbox` script from this directory and `docker`.
+need is the [expbox](/Docker/expbox) script from this directory and
+`docker`.
 
 If you do not have `docker` installed on your workstation or laptop,
 you will need to do that first. See the [Installing
