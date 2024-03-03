@@ -169,6 +169,7 @@ echo -n "---- The container id is: "
 docker run -dit -p $PORT:$PORT -w $WDIR $MOUNT -v $HOME:$homedir/$USER --name "$NAME" "$image" /bin/bash
 echo "---- Stop the running container using:    docker stop $NAME"
 echo "---- Remove the stopped container using:  docker rm $NAME"
+echo "---- Or do both at the same time using:   docker rm -f $NAME"
 echo ""
 
 # Add a new home base
@@ -187,5 +188,5 @@ if ((terminal > 0)); then
     docker exec -it --user $USER "$NAME" /bin/bash
 else
     # Run Jupyter as the host user
-    docker exec --user $USER "$NAME" jupyter $JTYPE --ip 0.0.0.0 --port=$PORT --no-browser
+    docker exec --user $USER "$NAME" /bin/bash --norc -c "jupyter $JTYPE --ip 0.0.0.0 --port=$PORT --no-browser"
 fi
