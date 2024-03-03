@@ -27,9 +27,9 @@ README](/Docker/README.md) for more details.
 
 | Directory    | Contents |
 | ---          | ---      |
+| Docker       | Recipe for building a docker image containing EXP, Jupyter, and standard Python packages |
 | Native       | Apptainer definition files for various flavors |
 | HPCCM        | HPC Container Maker recipe for building EXP *inside* of a container image |
-| Docker       | Recipe for building a docker image containing EXP, Jupyter, and standard Python packages |
 
 ## Notes
 
