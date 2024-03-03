@@ -2,13 +2,13 @@
 
 Recipes for creating Apptainer/Singularity and Docker containers for
 EXP.  We provide examples for three strategies:
-1. *Native* - EXP is built from source on the host and installed in
-   the container
-2. *HPCCM* - EXP is built inside of the container using NVidia HPC
-   Container Maker
-3. *Docker* - A docker image with Jupyter and friends for pyEXP and
+1. *Docker* - A docker image with Jupyter and friends for pyEXP and
    EXP simulations is available on Docker Hub!  We provide an HPCCM
    recipe and a Dockerfile for new builds.
+2. *Native* - EXP is built from source on the host and installed in
+   the container
+3. *HPCCM* - EXP is built inside of the container using NVidia HPC
+   Container Maker
 
 These recipes are still _experimental_.  Please help us make these
 better by posting issues on the GitHub repository and contributing

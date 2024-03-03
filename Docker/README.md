@@ -6,7 +6,7 @@ need is the `expbox` script from this directory and `docker`.
 
 If you do not have `docker` installed on your workstation or laptop,
 you will need to do that first. See the [Installing
-Docker](#Installing_Docker) section below. We recommend the community
+Docker](#Installing-Docker) section below. We recommend the community
 edition of Docker but the Docker Desktop is available for Linux, Mac
 OS X, and Windows. One the desktop is installed, you will also have
 the command-line interface needed by the script or for manually
