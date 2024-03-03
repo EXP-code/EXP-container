@@ -109,10 +109,26 @@ your distribution for details.
 
 #### Ubuntu
 
-Docker.com provides a Docker Desktop package. Alternatively, you can
-use the docker.com PPA for the community edition as follows.  First,
-update your existing list of packages and install a few prerequisites
-which you probably already have:
+Docker *is* in the main repository so a simple:
+
+```
+sudp apt install docker.io
+```
+
+is enough to get you going.  You will also want to add your user name to
+the docker group:
+
+```
+sudo adduser <user> docker
+```
+
+to allow docker commands to be run *without* sudo.
+
+There are installation alternatives to Cannonical's repository.
+Docker.com provides a Docker Desktop package. Also, you can use the
+docker.com PPA for the latest, greatest community edition as follows.
+First, update your existing list of packages and install a few
+prerequisites which you probably already have:
 
 ```
 sudo apt update
