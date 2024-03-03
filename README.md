@@ -1,6 +1,6 @@
 # EXP-container
 
-Recipes for creating Apptainer/Singularity and Docker containers for
+Recipes for creating Docker and Apptainer/Singularity containers for
 EXP.  We provide examples for three strategies:
 1. *Docker* - A docker image with Jupyter and friends for pyEXP and
    EXP simulations is available on Docker Hub!  We provide an HPCCM
