@@ -15,6 +15,25 @@ running the container.  The Desktop version is the preferred
 installation for Windows. Note: the EXP Docker container _should_ work
 for Windows using WSL but it is not currently tested.
 
+The EXP images on Docker Hub are tagged by a short git commit hash.
+In addition, the latest build is tagged `latest`.  You will 
+automatically get the latest build the first time you run the `expbox` 
+script. After that first download, your Docker image *will not* be
+automatically updated from the Hub.  To retrieve an updated image, run
+the command
+
+```
+docker pull the9cat/exp:tag
+```
+
+to get the the image with a specific `tag` value or
+
+```
+docker pull the9cat/exp
+```
+
+to get the most recent build.
+
 This container is designed to be run on a workstation or laptop,
 rather than a cluster.  Rather than custom build HPC libraries for a
 particular version of OpenMPI and Cuda, we build the Docker container
