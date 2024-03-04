@@ -60,7 +60,7 @@ Stage0 += generic_cmake(
                 '-D FFTW_INCLUDE_DIRS=/usr/include/fftw3',
                 '-D Eigen3_DIR=/usr/share/eigen3/cmake',
                 '-D CMAKE_INSTALL_PREFIX=/usr/local/EXP'],
-    preconfigure=['git config --global --add safe.directory /src/EXP'],
+    preconfigure=['git config --global --add safe.directory /var/tmp/EXP'],
     prefix='/usr/local/EXP',
     runtime_environment={
         'LD_LIBRARY_PATH': '/usr/local/EXP/lib:${LD_LIBRARY_PATH}',

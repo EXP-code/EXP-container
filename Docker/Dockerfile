@@ -11,7 +11,7 @@
 # Build notes:
 # 
 #   * The container build requires the following commands:
-#     $ hpccm --recipe exp_all_deb.py --format docker > Dockerfile
+#     $ hpccm --recipe public_all_debs.py --format docker > Dockerfile
 #     $ docker build -t exp-test -f Dockerfile .
 #   or
 #     $docker build --platform=linux/amd64,linux/arm64 -t the9cat/exp:latest --push -f Dockerfile .
@@ -60,7 +60,7 @@ RUN apt-get update -y && \
 COPY EXP.tar.gz /var/tmp/EXP.tar.gz
 RUN mkdir -p /var/tmp && tar -x -f /var/tmp/EXP.tar.gz -C /var/tmp -z && \
     cd /var/tmp/EXP && \
-    git config --global --add safe.directory /src/EXP && \
+    git config --global --add safe.directory /var/tmp/EXP && \
     mkdir -p /var/tmp/EXP/build && cd /var/tmp/EXP/build && cmake -DCMAKE_INSTALL_PREFIX=/usr/local/EXP -D CMAKE_BUILD_TYPE=Release -D ENABLE_CUDA=NO -D ENABLE_USER=YES -D ENABLE_SLURM=NO -D ENABLE_PNG=NO -D ENABLE_VTK=NO -D FFTW_INCLUDE_DIRS=/usr/include/fftw3 -D Eigen3_DIR=/usr/share/eigen3/cmake -D CMAKE_INSTALL_PREFIX=/usr/local/EXP /var/tmp/EXP && \
     cmake --build /var/tmp/EXP/build --target all -- -j$(nproc) && \
     cmake --build /var/tmp/EXP/build --target install -- -j$(nproc) && \
