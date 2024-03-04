@@ -1,14 +1,16 @@
 # EXP-container
 
-Recipes for creating [Docker](https://www.docker.com/get-started/)
-and [Apptainer/Singularity](https://apptainer.org) containers for
-EXP.  We provide examples for three strategies:
-1. *Docker* - A docker image with Jupyter and friends for pyEXP and
-   EXP simulations is available on Docker Hub!  We provide an HPCCM
-   recipe and a Dockerfile for new builds.
-2. *Native* - EXP is built from source on the host and installed in
+Recipes for creating [Docker](https://www.docker.com/) and [Apptainer](https://apptainer.org/)/[Singularity](https://docs.sylabs.io/guides/3.5/user-guide/index.html) containers for
+EXP. Containers package code with its dependencies such that the code 
+can easily be run anywhere. We provide examples for three strategies:
+
+1. *Docker* - A Docker image with Jupyter and friends for pyEXP and
+   EXP simulations is available on Docker Hub! Note that this container
+   is designed to be run on a workstation or laptop -- _not_ a cluster.
+   We also provide an HPCCM recipe and a Dockerfile for new builds.
+3. *Native* - EXP is built from source on the host and installed in
    the container
-3. *HPCCM* - EXP is built inside of the container using NVidia HPC
+4. *HPCCM* - EXP is built inside of the container using NVidia HPC
    Container Maker
 
 These recipes are still _experimental_.  Please help us make these
@@ -42,7 +44,7 @@ README](/Docker/README.md) for more details.
 - EXP uses Slurm to detect remaining wall-clock time and terminate
   smoothly before exceeding the allocated time limit.  However, system
   slurm access is not always successful from inside the container.
-  There is no significantly loss of functionality by disabling this in
+  There is no significant loss of functionality by disabling this in
   CMake using `-DENABLE_SLURM=OFF` in the Apptainer definition file.
 
 - All examples have been built in the Ubuntu environment.  However we
