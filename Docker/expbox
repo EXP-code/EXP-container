@@ -185,7 +185,7 @@ docker exec "$NAME" /bin/bash -c "useradd -M -b $homedir -s /bin/bash -g $GID -u
 
 if ((terminal > 0)); then
     # Run a terminal
-    docker exec -it --user $USER "$NAME" /bin/bash
+    docker exec -it --user $USER "$NAME" /bin/bash --norc
 else
     # Run Jupyter as the host user
     docker exec --user $USER "$NAME" /bin/bash --norc -c "jupyter $JTYPE --ip 0.0.0.0 --port=$PORT --no-browser"
