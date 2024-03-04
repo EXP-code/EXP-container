@@ -9,7 +9,7 @@ If you do not have `docker` installed on your workstation or laptop,
 you will need to do that first. See the [Installing
 Docker](#Installing-Docker) section below. We recommend the community
 edition of Docker but the Docker Desktop is available for Linux, Mac
-OS X, and Windows. One the desktop is installed, you will also have
+OS X, and Windows. One the Desktop is installed, you will also have
 the command-line interface needed by the script or for manually
 running the container.  The Desktop version is the preferred
 installation for Windows. Note: the EXP Docker container _should_ work
@@ -67,7 +67,8 @@ running.
 - The `expbox` script with no options will start a Jupyter Notebook in
   your home directory using the first available open networking port
   beginning with 8888. You can use the `-p <port>` option to specify a
-  preferred port.
+  preferred port. To start the notebook in a different directory, add
+  `-d <path_to_directory_here>`. 
 - The container name will be `expbox_<port>`. You can change the
   prefix name using the `-n <name>` option.
 - The terminal session invoked with `-t` will give you a shell with
@@ -119,7 +120,8 @@ brew install --cask docker
 
 See `https://docs.docker.com/desktop/install/mac-install/` for
 instructions on how to install Docker for Mac OS X using a `.dmg`
-package.
+package. By following the install instructions on the Docker website,
+you will get both a Docker Desktop GUI and the command line interface
 
 ### Linux
 
