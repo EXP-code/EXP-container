@@ -68,9 +68,13 @@ running.
   your home directory using the first available open networking port
   beginning with 8888. You can use the `-p <port>` option to specify a
   preferred port. To start the notebook in a different directory, add
-  `-d <path_to_directory_here>`. 
+  `-d <path_to_directory_here>`.
 - The container name will be `expbox_<port>`. You can change the
   prefix name using the `-n <name>` option.
+- The script attempts to find an unused port. If `docker` has an old
+  stopped container with an inactive port, this strategy may result in
+  the same assigned name.  When this happens, simply remove the
+  container using the `docker rm expbox_<port>` command and try again.
 - The terminal session invoked with `-t` will give you a shell with
   user privileges and access to the EXP container. You can use this to
   run `exp` or any of the standalone routines that are part of the
