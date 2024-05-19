@@ -79,7 +79,7 @@ Stage1 += Stage0.runtime(_from='devel')
 
 Stage1 += compiler
 
-Stage1 += apt_get(ospackages=['libpython3.10-dev', 'libopenmpi-dev', 'openmpi-bin', 'less', 'libfftw3-3', 'libhdf5-103', 'libhdf5-cpp-103', 'ffmpeg', 'nano', 'libgsl-dev', 'libeigen3-dev', 'python3.10-dev', 'dvipng', 'unzip', 'make'])
+Stage1 += apt_get(ospackages=['libpython3.10-dev', 'libopenmpi-dev', 'openmpi-bin', 'less', 'libfftw3-3', 'libhdf5-dev', 'libhdf5-103', 'libhdf5-cpp-103', 'ffmpeg', 'nano', 'libgsl-dev', 'libeigen3-dev', 'python3.10-dev', 'dvipng', 'unzip', 'make'])
 
 # Install EXP into the runtime image
 #
