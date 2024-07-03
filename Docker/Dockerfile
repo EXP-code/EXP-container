@@ -11,10 +11,10 @@
 # Build notes:
 # 
 #   * The container build requires the following commands:
-#     $ hpccm --recipe public_all_debs.py --format docker > Dockerfile
+#     $ hpccm --recipe exp_all_deb.py --format docker > Dockerfile
 #     $ docker build -t exp-test -f Dockerfile .
 #   or
-#     $docker build --platform=linux/amd64,linux/arm64 -t the9cat/exp:latest --push -f Dockerfile .
+#     $ docker buildx build --platform=linux/amd64,linux/arm64 -t the9cat/exp:latest --push -f Dockerfile .
 # 
 #   * You will need to put the EXP.tar.gz file in the build directory. I
 #     like to make a fresh clone and run `git submodule update --init
@@ -61,6 +61,10 @@ COPY EXP.tar.gz /var/tmp/EXP.tar.gz
 RUN mkdir -p /var/tmp && tar -x -f /var/tmp/EXP.tar.gz -C /var/tmp -z && \
     cd /var/tmp/EXP && \
     git config --global --add safe.directory /var/tmp/EXP && \
+    git config --global --add safe.directory /var/tmp/EXP/extern/HighFive && \
+    git config --global --add safe.directory /var/tmp/EXP/extern/pybind11 && \
+    git config --global --add safe.directory /var/tmp/EXP/extern/yaml-cpp && \
+    git config --global --add safe.directory /var/tmp/EXP/extern/HighFive/deps/catch2 && \
     mkdir -p /var/tmp/EXP/build && cd /var/tmp/EXP/build && cmake -DCMAKE_INSTALL_PREFIX=/usr/local/EXP -D CMAKE_BUILD_TYPE=Release -D ENABLE_CUDA=NO -D ENABLE_USER=YES -D ENABLE_SLURM=NO -D ENABLE_PNG=NO -D ENABLE_VTK=NO -D FFTW_INCLUDE_DIRS=/usr/include/fftw3 -D Eigen3_DIR=/usr/share/eigen3/cmake -D CMAKE_INSTALL_PREFIX=/usr/local/EXP /var/tmp/EXP && \
     cmake --build /var/tmp/EXP/build --target all -- -j$(nproc) && \
     cmake --build /var/tmp/EXP/build --target install -- -j$(nproc) && \
@@ -83,8 +87,8 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=devel /usr/local/EXP /usr/local/EXP
-ENV LD_LIBRARY_PATH=/usr/local/EXP/lib:${LD_LIBRARY_PATH} \
-    LIBRARY_PATH=/usr/local/EXP/lib:${LIBRARY_PATH} \
+ENV LD_LIBRARY_PATH=/usr/local/EXP/lib \
+    LIBRARY_PATH=/usr/local/EXP/lib \
     PATH=/usr/local/EXP/bin:${PATH}
 
 # GNU compiler
@@ -97,27 +101,20 @@ RUN apt-get update -y && \
 
 RUN apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        dvipng \
         ffmpeg \
-        jupyter \
-        jupyter-notebook \
         less \
         libeigen3-dev \
         libfftw3-3 \
         libgsl-dev \
         libhdf5-103 \
         libhdf5-cpp-103 \
+        libhdf5-dev \
+        libopenmpi-dev \
         libpython3.10-dev \
         make \
         nano \
         openmpi-bin \
-        python3-astropy \
-        python3-h5py \
-        python3-ipyparallel \
-        python3-matplotlib \
-        python3-mpi4py \
-        python3-numpy \
-        python3-scipy \
-        python3-traitlets \
         python3.10-dev \
         unzip && \
     rm -rf /var/lib/apt/lists/*
@@ -128,11 +125,11 @@ COPY --from=devel /usr/local/EXP/lib /usr/local/EXP/lib
 
 ENV PATH=/usr/local/EXP/bin:$PATH
 
-ENV LIBRARY_PATH=/usr/local/EXP/lib:$LIBRARY_PATH
+ENV LIBRARY_PATH=/usr/local/EXP/lib
 
-ENV LD_LIBRARY_PATH=/usr/local/EXP/lib:$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH=/usr/local/EXP/lib
 
-ENV PYTHONPATH=/usr/local/EXP/lib/python3.10/site-packages:${PYTHONPATH}
+ENV PYTHONPATH=/usr/local/EXP/lib/python3.10/site-packages
 
 # pip
 RUN apt-get update -y && \
@@ -143,7 +140,7 @@ RUN apt-get update -y && \
         python3-wheel && \
     rm -rf /var/lib/apt/lists/*
 RUN pip3 --no-cache-dir install --upgrade pip && \
-    pip3 --no-cache-dir install PyYAML k3d pandas gala galpy jupyterlab
+    pip3 --no-cache-dir install numpy scipy matplotlib jupyter h5py mpi4py PyYAML k3d pandas astropy gala galpy jupyterlab ipyparallel
 
 RUN yes | pip3 uninstall traitlets && \
     pip install traitlets==5.9.0
