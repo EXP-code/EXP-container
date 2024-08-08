@@ -62,6 +62,10 @@ This script will automatically download a prebuilt Docker image from
 the Docker Hub and start the container.  Then you should be up and
 running.
 
+The container includes the EXP _ReadTheDocs_ online documentation at
+`http://localhost:8080` or, equivalently, `http://127.0.0.1:8080`.
+The script automatically starts the web server on launch.
+
 ### Tips and hints for running EXP in Docker
 
 - The `expbox` script with no options will start a Jupyter Notebook in
