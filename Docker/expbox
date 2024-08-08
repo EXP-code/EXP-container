@@ -166,10 +166,15 @@ fi
 # Starts the container in an interactive, detached state in the data directory
 echo "---- The container name is: $NAME"
 echo -n "---- The container id is: "
-docker run -dit -p $PORT:$PORT -w $WDIR $MOUNT -v $HOME:$homedir/$USER --name "$NAME" "$image" /bin/bash
+docker run -dit -p $PORT:$PORT -p 8080:80 -w $WDIR $MOUNT -v $HOME:$homedir/$USER --name "$NAME" "$image" /bin/bash
+echo "----"
 echo "---- Stop the running container using:    docker stop $NAME"
 echo "---- Remove the stopped container using:  docker rm $NAME"
 echo "---- Or do both at the same time using:   docker rm -f $NAME"
+echo "----"
+echo "---- The 'readthedocs' manual is included in this Docker container!"
+echo "---- Point at http://localhost:8080 or http://127.0.0.1:8080 to see it."
+echo "----"
 echo ""
 
 # Add a new home base
@@ -183,10 +188,19 @@ docker exec "$NAME" /bin/bash -c "groupadd -f -g $GID $GROUP"
 # Attach to the container and add the host user
 docker exec "$NAME" /bin/bash -c "useradd -M -b $homedir -s /bin/bash -g $GID -u $UID $USER"
 
+# Start the web server
+docker exec -d $NAME /bin/bash --norc -c "apache2ctl start"
+
 if ((terminal > 0)); then
+    echo "----"
+    echo "Beginning an interactive session"
+    echo "----"
     # Run a terminal
     docker exec -it --user $USER "$NAME" /bin/bash --norc
 else
+    echo "----"
+    echo "Starting Jupyter"
+    echo "----"
     # Run Jupyter as the host user
     docker exec --user $USER "$NAME" /bin/bash --norc -c "jupyter $JTYPE --ip 0.0.0.0 --port=$PORT --no-browser"
 fi

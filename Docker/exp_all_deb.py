@@ -18,7 +18,7 @@ Build notes:
 
   * You will need to put the EXP.tar.gz file in the build directory. I
     like to make a fresh clone and run `git submodule update --init
-    --recursive` before tarritn it up.
+    --recursive` before tarring it up.
 
 """
 devel_image = 'ubuntu:22.04'
@@ -60,7 +60,7 @@ Stage0 += generic_cmake(
                 '-D FFTW_INCLUDE_DIRS=/usr/include/fftw3',
                 '-D Eigen3_DIR=/usr/share/eigen3/cmake',
                 '-D CMAKE_INSTALL_PREFIX=/usr/local/EXP'],
-    preconfigure=['git config --global --add safe.directory /var/tmp/EXP', 'git config --global --add safe.directory /var/tmp/EXP/extern/HighFive', 'git config --global --add safe.directory /var/tmp/EXP/extern/pybind11', 'git config --global --add safe.directory /var/tmp/EXP/extern/yaml-cpp', 'git config --global --add safe.directory /var/tmp/EXP/extern/HighFive/deps/catch2'],
+    preconfigure=['git config --global --add safe.directory /var/tmp/EXP', 'git config --global --add safe.directory /var/tmp/EXP/extern/HighFive', 'git config --global --add safe.directory /var/tmp/EXP/extern/pybind11', 'git config --global --add safe.directory /var/tmp/EXP/extern/yaml-cpp', 'git config --global --add safe.directory /var/tmp/EXP/extern/HighFive/deps/catch2', 'mkdir -p /usr/local/EXP/doc', 'cp -a /var/tmp/EXP/sphinx/* /usr/local/EXP/doc'],
     prefix='/usr/local/EXP',
     runtime_environment={
         'LD_LIBRARY_PATH': '/usr/local/EXP/lib',
@@ -79,7 +79,7 @@ Stage1 += Stage0.runtime(_from='devel')
 
 Stage1 += compiler
 
-Stage1 += apt_get(ospackages=['libpython3.10-dev', 'libopenmpi-dev', 'openmpi-bin', 'less', 'libfftw3-3', 'libhdf5-dev', 'libhdf5-103', 'libhdf5-cpp-103', 'ffmpeg', 'nano', 'libgsl-dev', 'libeigen3-dev', 'python3.10-dev', 'dvipng', 'unzip', 'make'])
+Stage1 += apt_get(ospackages=['libpython3.10-dev', 'libopenmpi-dev', 'openmpi-bin', 'less', 'libfftw3-3', 'libhdf5-dev', 'libhdf5-103', 'libhdf5-cpp-103', 'ffmpeg', 'nano', 'libgsl-dev', 'libeigen3-dev', 'python3.10-dev', 'dvipng', 'unzip', 'make', 'busybox', 'apache2', 'apache2-utils'])
 
 # Install EXP into the runtime image
 #
@@ -87,6 +87,8 @@ Stage1 += copy(_from='devel',
                src='/usr/local/EXP/bin', dest='/usr/local/EXP/bin')
 Stage1 += copy(_from='devel',
                src='/usr/local/EXP/lib', dest='/usr/local/EXP/lib')
+Stage1 += copy(_from='devel',
+               src='/usr/local/EXP/doc', dest='/var/www/html')
 
 # Add EXP to the path and library paths
 #
@@ -102,3 +104,7 @@ Stage1 += pip(packages=['numpy', 'scipy', 'matplotlib', 'jupyter', 'h5py', 'mpi4
 # Jupyter Lab workaround
 #
 Stage1 += shell(commands=['yes | pip3 uninstall traitlets', 'pip install traitlets==5.9.0'])
+
+# Start the web server
+#
+# Stage1 += runscript(commands=['apache2ctl start'])
