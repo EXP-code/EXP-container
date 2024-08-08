@@ -15,6 +15,7 @@ an optional initial working directory.
     -i image    Docker image to use (default: 'the9cat/exp:latest')
     -n name     Docker container name prefix (default: 'expbox')
     -p port     Jupyter port number (default: first unused port>=8888)
+    -P port     Web server port number
     -v          verbose mode
 
 Start a Jupyter Notebook in your home directory:
@@ -42,12 +43,13 @@ verbose=0
 terminal=0
 jupyter_lab=0
 port=0
+webp=0
 image="the9cat/exp:latest"	# Default image
 name="expbox"
 
 OPTIND=1
 
-while getopts hvltd:i:n:p: opt; do
+while getopts hvltd:i:n:p:P: opt; do
     case $opt in
         h)
             show_help
@@ -67,6 +69,8 @@ while getopts hvltd:i:n:p: opt; do
             ;;
         p)  port=$OPTARG
             ;;
+        P)  webp=$OPTARG
+            ;;
         *)
             show_help >&2
             exit 1
@@ -81,8 +85,28 @@ shift "$((OPTIND-1))"   # Discard the options and sentinel --
 
 # Get an unused port in a range
 
+WEBP=8080
+WLST=8800
 PORT=8888
 LAST=12000
+
+if (( webp > 0 )); then
+    WEBP=$webp
+else
+    until (( WEBP > WLST ))
+    do
+	if [[ -z `lsof -i ":$WEBP"` ]]; then
+	    if ((verbose > 0)); then
+		printf 'Found available port=<%d>\n' $WEBP;
+	    fi
+	    break;
+	elif (( WEBP == WLST )); then
+	    echo "No ports available";
+	    exit 1;
+	fi
+	let WEBP+=1;
+    done
+fi
 
 if (( port > 0 )); then
     PORT=$port
@@ -166,14 +190,14 @@ fi
 # Starts the container in an interactive, detached state in the data directory
 echo "---- The container name is: $NAME"
 echo -n "---- The container id is: "
-docker run -dit -p $PORT:$PORT -p 8080:80 -w $WDIR $MOUNT -v $HOME:$homedir/$USER --name "$NAME" "$image" /bin/bash
+docker run -dit -p $PORT:$PORT -p $WEBP:80 -w $WDIR $MOUNT -v $HOME:$homedir/$USER --name "$NAME" "$image" /bin/bash
 echo "----"
 echo "---- Stop the running container using:    docker stop $NAME"
 echo "---- Remove the stopped container using:  docker rm $NAME"
 echo "---- Or do both at the same time using:   docker rm -f $NAME"
 echo "----"
 echo "---- The 'readthedocs' manual is included in this Docker container!"
-echo "---- Point at http://localhost:8080 or http://127.0.0.1:8080 to see it."
+echo "---- Point at http://localhost:$WEBP or http://127.0.0.1:$WEBP to see it."
 echo "----"
 echo ""
 
@@ -193,14 +217,12 @@ docker exec -d $NAME /bin/bash --norc -c "apache2ctl start"
 
 if ((terminal > 0)); then
     echo "----"
-    echo "Beginning an interactive session"
+    echo "---- Beginning an interactive terminal session"
     echo "----"
-    # Run a terminal
     docker exec -it --user $USER "$NAME" /bin/bash --norc
 else
     echo "----"
-    echo "Starting Jupyter"
+    echo "---- Starting Jupyter for $USER"
     echo "----"
-    # Run Jupyter as the host user
     docker exec --user $USER "$NAME" /bin/bash --norc -c "jupyter $JTYPE --ip 0.0.0.0 --port=$PORT --no-browser"
 fi
