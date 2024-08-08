@@ -104,7 +104,3 @@ Stage1 += pip(packages=['numpy', 'scipy', 'matplotlib', 'jupyter', 'h5py', 'mpi4
 # Jupyter Lab workaround
 #
 Stage1 += shell(commands=['yes | pip3 uninstall traitlets', 'pip install traitlets==5.9.0'])
-
-# Start the web server
-#
-# Stage1 += runscript(commands=['apache2ctl start'])
