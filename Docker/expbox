@@ -213,7 +213,7 @@ docker exec "$NAME" /bin/bash -c "groupadd -f -g $GID $GROUP"
 docker exec "$NAME" /bin/bash -c "useradd -M -b $homedir -s /bin/bash -g $GID -u $UID $USER"
 
 # Start the web server
-docker exec -d $NAME /bin/bash --norc -c "apache2ctl start"
+docker exec -d $NAME /bin/bash --norc -c "busybox httpd -h /var/www/html"
 
 if ((terminal > 0)); then
     echo "----"
