@@ -36,6 +36,18 @@ Start a bash terminal in a specific directory:
 EOF
 }
 
+# Flag message
+flag_once=0
+flag_message() {
+cat << EOF
+---- We use 'sudo' to check for unused ports.  If you do not have or
+---- can not use 'sudo', please choose Jupyter and Web ports using
+---- the '-p' and '-P' flags.
+----
+EOF
+flag_once=1
+}
+
 # Initialize variables
 
 working_dir=""
@@ -93,9 +105,13 @@ LAST=12000
 if (( webp > 0 )); then
     WEBP=$webp
 else
+    if (( flag_once == 0 )); then
+	flag_message
+    fi
+
     until (( WEBP > WLST ))
     do
-	if [[ -z `lsof -i ":$WEBP"` ]]; then
+	if [[ -z `sudo lsof -i ":$WEBP"` ]]; then
 	    if ((verbose > 0)); then
 		printf 'Found available port=<%d>\n' $WEBP;
 	    fi
@@ -111,9 +127,13 @@ fi
 if (( port > 0 )); then
     PORT=$port
 else
+    if (( flag_once == 0 )); then
+	flag_message
+    fi
+
     until (( PORT > LAST ))
     do
-	if [[ -z `lsof -i ":$PORT"` ]] && [[ -z `docker ps -q -f name="expbox_$PORT"` ]]; then
+	if [[ -z `sudo lsof -i ":$PORT"` ]] && [[ -z `docker ps -q -f name="expbox_$PORT"` ]]; then
 	    if ((verbose > 0)); then
 		printf 'Found available port=<%d>\n' $PORT;
 	    fi
