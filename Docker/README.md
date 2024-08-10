@@ -64,21 +64,25 @@ running.
 
 The container includes the EXP _ReadTheDocs_ online documentation at
 `http://localhost:8080` or, equivalently, `http://127.0.0.1:8080`.
-The script automatically starts the web server on launch.
+The script automatically starts the web server on launch.  If port
+8080 is not available on your system, the script will use the `lsof`
+to identify an used port. This requires `sudo`.  Alternatively, you may 
+choose your own port # using the `-P <port>` flag.
 
 ### Tips and hints for running EXP in Docker
 
 - The `expbox` script with no options will start a Jupyter Notebook in
   your home directory using the first available open networking port
-  beginning with 8888. You can use the `-p <port>` option to specify a
-  preferred port. To start the notebook in a different directory, add
+  beginning with 8888.  This requires `sudo`.  Alternatively, you can use
+  the `-p <port>` option to specify a preferred port. To start the
+  notebook in a different directory, add
   `-d <path_to_directory_here>`.
 - The container name will be `expbox_<port>`. You can change the
   prefix name using the `-n <name>` option.
 - The script attempts to find an unused port. If `docker` has an old
   stopped container with an inactive port, this strategy may result in
   the same assigned name.  When this happens, simply remove the
-  container using the `docker rm expbox_<port>` command and try again.
+  container using the `docker rm -f expbox_<port>` command and try again.
 - The terminal session invoked with `-t` will give you a shell with
   user privileges and access to the EXP container. You can use this to
   run `exp` or any of the standalone routines that are part of the
