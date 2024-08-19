@@ -48,6 +48,31 @@ EOF
 flag_once=1
 }
 
+root_message() {
+    cat << EOF
+---- Please run this script as a normal user, not as sudo or root.
+----
+EOF
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+	cat << EOF
+---- If you are running as root for privilege to execute docker,
+---- please see https://docs.docker.com/engine/install/linux-postinstall
+---- for details on configuring Docker Engine for normal users in Linux.
+----
+---- Alternatively, you may prefer the user-oriented Docker Desktop.
+---- See https://docs.docker.com/install for instructions on
+---- installing Docker Desktop for various Linux flavors.
+EOF
+    else
+	cat << EOF
+---- This should be the default for Mac OS or Windows OS.  See
+---- https://docs.docker.com/engine/install for OS-specific hints. 
+EOF
+    fi
+    exit
+}
+
+
 # Initialize variables
 
 working_dir=""
@@ -94,6 +119,11 @@ shift "$((OPTIND-1))"   # Discard the options and sentinel --
 # Everything that's left in "$@" is a non-option.  In our case, a FILE to process.
 # printf 'verbose=<%d>\noutput_file=<%s>\nLeftovers:\n' "$verbose" "$output_file"
 # printf '<%s>\n' "$@"
+
+if [ "$EUID" -eq 0 ]
+then
+    root_message
+fi
 
 # Get an unused port in a range
 
