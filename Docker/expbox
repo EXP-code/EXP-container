@@ -163,7 +163,7 @@ else
 
     until (( PORT > LAST ))
     do
-	if [[ -z `sudo lsof -i ":$PORT"` ]] && [[ -z `docker ps -q -f name="expbox_$PORT"` ]]; then
+	if [[ -z `sudo lsof -i ":$PORT"` ]] && [[ -z `docker ps -a -q -f name="expbox_$PORT"` ]]; then
 	    if ((verbose > 0)); then
 		printf 'Found available port=<%d>\n' $PORT;
 	    fi
