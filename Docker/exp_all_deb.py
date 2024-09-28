@@ -79,7 +79,7 @@ Stage1 += Stage0.runtime(_from='devel')
 
 Stage1 += compiler
 
-Stage1 += apt_get(ospackages=['libpython3.10-dev', 'libopenmpi-dev', 'openmpi-bin', 'less', 'libfftw3-3', 'libhdf5-dev', 'libhdf5-103', 'libhdf5-cpp-103', 'ffmpeg', 'nano', 'libgsl-dev', 'libeigen3-dev', 'python3.10-dev', 'dvipng', 'unzip', 'make', 'busybox'])
+Stage1 += apt_get(ospackages=['libpython3.10-dev', 'libopenmpi-dev', 'openmpi-bin', 'less', 'libfftw3-3', 'libhdf5-dev', 'libhdf5-103', 'libhdf5-cpp-103', 'ffmpeg', 'nano', 'libgsl-dev', 'libeigen3-dev', 'python3.10-dev', 'dvipng', 'unzip', 'make', 'busybox', 'git'])
 
 # Install EXP into the runtime image
 #
@@ -99,4 +99,4 @@ Stage1 += environment(variables={'LD_LIBRARY_PATH': '/usr/local/EXP/lib'})
 # Some packages needed or useful for running pyEXP
 #
 Stage1 += environment(variables={'PYTHONPATH': '/usr/local/EXP/lib/python3.10/site-packages'})
-Stage1 += pip(packages=['numpy', 'scipy', 'matplotlib', 'jupyter', 'h5py', 'mpi4py', 'PyYAML', 'k3d', 'pandas', 'astropy', 'gala', 'galpy', 'jupyterlab', 'ipyparallel'], pip='pip3', upgrade=True, ospackages=['python3-pip', 'python3-setuptools', 'python3-wheel', 'python3-pip-whl'])
+Stage1 += pip(packages=['numpy', 'scipy', 'matplotlib', 'jupyter', 'h5py', 'mpi4py', 'PyYAML', 'k3d', 'pandas', 'astropy', 'gala', 'galpy', 'pynbody', 'jupyterlab', 'ipyparallel'], pip='pip3', upgrade=True, ospackages=['python3-pip', 'python3-setuptools', 'python3-wheel', 'python3-pip-whl'])
