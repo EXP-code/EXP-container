@@ -6,19 +6,19 @@ Contents:
   * CUDA version 11.7
   * FFTW version 3.3.8
   * GNU compilers (upstream)
-  * HDF5 version 1.10.7
+  * HDF5 version 1.10.10
   * OpenMPI version 4.1.3 with PMIX, PMI2, and Infiniband support
   * Python 2 and 3 (upstream)
   * CMake (upstream)
   * Ubuntu 22.04 (if you want another image, you will need to update
     this configuration for the dependent packages.  Please add the appropriate
     usearg switches and contribute this back to the EXP repo, if you would.)
-  * Ubuntu packages: libeigen3-dev wget git tar
+  * Ubuntu packages: libeigen3-dev libslurm37 libslurm-dev wget git tar
 
 Build notes:
 
   * The container build requires the following commands:
-    $ hpccm --recipe exp-gnu-openmpi.py --singularity-version=3.2 --format singularity > Singularity.def
+    $ hpccm --cpu-target x86_64 --working-directory /src --recipe exp-gnu-openmpi.py --singularity-version=3.2 --format singularity > Singularity.def
     $ sudo apptainer build EXP.sif Singularity.def
 
   * You will need ensure that your environment has github access to
@@ -67,7 +67,7 @@ Stage0 += pmix(toolchain=compiler.toolchain,
 Stage0 += slurm_pmi2(toolchain=compiler.toolchain)
 
 # OpenMPI
-Stage0 += openmpi(version='4.1.3', 
+Stage0 += openmpi(version='4.1.6', 
                   pmix=True, pmi='/usr/local/slurm-pmi2', 
                   ospackages=['file', 'hwloc', 'libslurm-dev'],
                   with_slurm=True,
@@ -79,7 +79,7 @@ Stage0 += openmpi(version='4.1.3',
 Stage0 += fftw(version='3.3.8', mpi=True, toolchain=compiler.toolchain)
 
 # HDF5
-Stage0 += hdf5(version='1.10.7', toolchain=compiler.toolchain)
+Stage0 += hdf5(version='1.10.10', toolchain=compiler.toolchain)
 
 # CMake
 Stage0 += cmake(eula=True)
@@ -102,21 +102,22 @@ Stage0 += generic_cmake(
                 '-D CUDA_USE_STATIC_CUDA_RUNTIME=off',
                 '-D ENABLE_CUDA=YES',
                 '-D ENABLE_USER=YES',
+                '-D ENABLE_DSMC=YES',
                 '-D ENABLE_SLURM=NO',
                 '-D ENABLE_PNG=NO',
                 '-D ENABLE_VTK=NO',
                 '-D Eigen3_DIR=/usr/share/eigen3/cmake',
                 '-D FFTW_ROOT=/usr/local/fftw',
                 '-D CMAKE_INSTALL_PREFIX=/usr/local/EXP'],
-#    preconfigure=['git submodule update --init --recursive'],
-    preconfigure=['git config --global --add safe.directory /src/EXP'],
+    preconfigure=['git submodule update --init --recursive', 
+                  'git config --global --add safe.directory /src/EXP'],
     prefix='/usr/local/EXP',
+    build_environment={'CUDAARCHS': '"61;62;70;72;75"'},
     runtime_environment={
         'LD_LIBRARY_PATH': '/usr/local/EXP/lib:${LD_LIBRARY_PATH}',
         'LIBRARY_PATH': '/usr/local/EXP/lib:${LIBRARY_PATH}',
         'PATH': '/usr/local/EXP/bin:${PATH}'},
-    package='/home/weinberg/Downloads/EXP.tar.gz'
-#    repository='https://github.com/EXP-code/EXP.git'
+    repository='https://github.com/EXP-code/EXP.git'
 )
 
 ################
@@ -129,7 +130,7 @@ Stage1 += Stage0.runtime(_from='devel')
 
 Stage1 += compiler
 
-Stage1 += apt_get(ospackages=['libpython3.10-dev', 'openmpi-bin', 'less'])
+Stage1 += apt_get(ospackages=['libpython3.10-dev', 'openmpi-bin', 'less', 'wget', 'git'])
 
 # Install EXP into the runtime image
 #
@@ -147,4 +148,4 @@ Stage1 += environment(variables={'LD_LIBRARY_PATH': '/usr/local/EXP/lib:$LD_LIBR
 # Some packages needed or useful for running pyEXP
 #
 Stage1 += environment(variables={'PYTHONPATH': '/usr/local/EXP/lib/python3.10/site-packages:${PYTHONPATH}'})
-Stage1 += pip(packages=['numpy', 'astropy', 'matplotlib', 'mpi4py', 'PyYAML'], pip='pip3', upgrade=True, ospackages=['python3-pip', 'python3-setuptools', 'python3-wheel', 'python3-pip-whl'])
+Stage1 += pip(packages=['numpy', 'astropy', 'gala', 'galpy', 'pynbody', 'pandas', 'matplotlib', 'mpi4py', 'PyYAML'], pip='pip3', upgrade=True, ospackages=['python3-pip', 'python3-setuptools', 'python3-wheel', 'python3-pip-whl'])
