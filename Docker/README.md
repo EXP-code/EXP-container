@@ -44,14 +44,14 @@ those of you that want to make your own Docker image, please see
 to generate a Dockerfile from the Python recipe. We also supply the
 Dockerfile that we used to make the Docker Hub image for EXP.
 
-[!NOTE]  
-The originally published EXP Docker image uses a Ubuntu 22.04
-base. This OS version deprecates system-wide `pip install`, but it is
-allowed and used to provide Python support. The latest stable Ubuntu
-release, 24.04, disallows it altogether. Recent images are built with
-24.04 using global `venv` as recommended by Canonical. To use the
-older _original_ version, this, grab the `expbox_old` script and the
-images tagged with `22`.
+> [!NOTE]  
+> The originally published EXP Docker image uses a Ubuntu 22.04
+> base. This OS version deprecates system-wide `pip install`, but it is
+> allowed and used to provide Python support. The latest stable Ubuntu
+> release, 24.04, disallows it altogether. Recent images are built with
+> 24.04 using global `venv` as recommended by Canonical. To use the
+> older _original_ version, this, grab the `expbox_old` script and the
+> images tagged with `22`.
 
 ## Usage
 
