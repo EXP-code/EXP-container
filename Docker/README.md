@@ -54,7 +54,7 @@ Dockerfile that we used to make the Docker Hub image for EXP.
 > use the older _original_ version, this, grab the `expbox_old` script
 > and the images tagged with `22`.
 
-> [!WARN]  
+> [!WARNING]  
 > The previous EXP Docker images tagged with `latest` are now
 > deprecated. The final `22.04` release in the `latest` series is
 > still available in DockerHub but is not recommended. We are
