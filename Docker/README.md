@@ -35,9 +35,6 @@ docker pull the9cat/exp:24
 
 to get the most recent build of the 24.04 image.
 
-
-
-
 This container is designed to be run on a workstation or laptop,
 rather than a cluster.  Rather than custom build HPC libraries for a
 particular version of OpenMPI and Cuda, we build the Docker container
@@ -50,12 +47,34 @@ Dockerfile that we used to make the Docker Hub image for EXP.
 
 > [!NOTE]  
 > The originally published EXP Docker image uses a Ubuntu 22.04
-> base. This OS version deprecates system-wide `pip install`, but it is
-> allowed and used to provide Python support. The latest stable Ubuntu
-> release, 24.04, disallows it altogether. Recent images are built with
-> 24.04 using global `venv` as recommended by Canonical. To use the
-> older _original_ version, this, grab the `expbox_old` script and the
-> images tagged with `22`.
+> base. This OS version deprecates system-wide `pip install`, but it
+> is allowed and used to provide Python support. The latest stable
+> Ubuntu release, 24.04, disallows it altogether. Recent images are
+> built with 24.04 using global `venv` as recommended by Canonical. To
+> use the older _original_ version, this, grab the `expbox_old` script
+> and the images tagged with `22`.
+
+> [!WARN]  
+> The previous EXP Docker images tagged with `latest` are now
+> deprecated. The final `22.04` release in the `latest` series is
+> still available in DockerHub but is not recommended. We are
+> distributing the older ones until the newer ones have been
+> thoroughly field tested. Please grab the latest version of `expbox`
+> [here](https://github.com/EXP-code/EXP-container/blob/main/Docker/expbox)
+> to automatically get the latest image.
+
+## Directory contents
+
+| File              | Contents |
+| ---               | ---      |
+| expbox            | The most recent Bash script for getting and running the EXP Docker image |
+| expbox_old        | The Bash script for the deprecated image using system-wide pip installs |
+| exp_all_deb_24.py | HPC Container Maker recipe for building EXP *inside* of a container image using the Ubuntu 24.04 image |
+| exp_all_deb_22.py | The deprecated HPC Container Maker recipe that uses system-wide pip installs |
+| Dockerfile24      | A Dockerfile to build the Ubuntu 24.04 produced by HPCCM, included for completeness |
+| Dockerfile22      | A Dockerfile for the deprecated build, included for completeness |
+| README.md         | This document |
+
 
 ## Usage
 
@@ -239,6 +258,6 @@ conda install -c conda-forge hpccm
 Then, create the Dockerfile by running
 
 ```
-hpccm --recipe exp_all_deb.py --format docker > Dockerfile
+hpccm --recipe exp_all_deb_24.py --format docker > Dockerfile24
 ```
 
