@@ -14,24 +14,25 @@ the command-line interface needed by the script or for manually
 running the container.  The Desktop version is the preferred
 installation for Windows.
 
-The EXP images on Docker Hub are tagged by a short git commit hash.
-In addition, the latest build is tagged `latest`.  You will 
-automatically get the latest build the first time you run the `expbox` 
-script. After that first download, your Docker image *will not* be
-automatically updated from the Hub.  To retrieve an updated image, run
-the command
+The EXP images on Docker Hub are labeled by a short git commit hash.
+In addition, the latest build is tagged either `24`, `22` or perhaps a
+custom tag for a particular bug fix or feature.  You will
+automatically get the latest build of the `24` image the first time
+you run the `expbox` script. After that first download, your Docker
+image *will not* be automatically updated from the Hub.  To retrieve
+an updated image, run the command
 
 ```
 docker pull the9cat/exp:tag
 ```
 
-to get the the image with a specific `tag` value or
+to get the the image with a specific `tag` value.  For example:
 
 ```
-docker pull the9cat/exp
+docker pull the9cat/exp:24
 ```
 
-to get the most recent build.
+to get the most recent build of the 24.04 image.
 
 This container is designed to be run on a workstation or laptop,
 rather than a cluster.  Rather than custom build HPC libraries for a
@@ -42,6 +43,38 @@ those of you that want to make your own Docker image, please see
 [HPC Container Maker](https://github.com/NVIDIA/hpc-container-maker)
 to generate a Dockerfile from the Python recipe. We also supply the
 Dockerfile that we used to make the Docker Hub image for EXP.
+
+> [!NOTE]  
+> The originally published EXP Docker image uses a Ubuntu 22.04
+> base. This OS version deprecates system-wide `pip install`, but it
+> is allowed and used to provide Python support. The latest stable
+> Ubuntu release, 24.04, disallows it altogether. Recent images are
+> built with 24.04 using global `venv` as recommended by Canonical. To
+> use the older _original_ version, this, grab the `expbox_old` script
+> and the images tagged with `22`.
+
+> [!WARNING]  
+> The previous EXP Docker images tagged with `latest` are now
+> deprecated. Images with the 22.04 release are still available in
+> DockerHub, tagged as `22` and `latest` (for backward compatibility
+> with the original `expbox` script) but are not recommended. We are
+> distributing EXP builds with ones until the newer ones have been
+> thoroughly field tested. Please grab the latest version of `expbox`
+> [here](https://github.com/EXP-code/EXP-container/blob/main/Docker/expbox)
+> to automatically get the latest image.
+
+## Directory contents
+
+| File              | Contents |
+| ---               | ---      |
+| expbox            | The most recent Bash script for getting and running the EXP Docker image |
+| expbox_old        | The Bash script for the deprecated image using system-wide pip installs |
+| exp_all_deb_24.py | HPC Container Maker recipe for building EXP *inside* of a container image using the Ubuntu 24.04 image |
+| exp_all_deb_22.py | The deprecated HPC Container Maker recipe that uses system-wide pip installs |
+| Dockerfile24      | A Dockerfile to build the Ubuntu 24.04 produced by HPCCM, included for completeness |
+| Dockerfile22      | A Dockerfile for the deprecated build, included for completeness |
+| README.md         | This document |
+
 
 ## Usage
 
@@ -299,6 +332,6 @@ conda install -c conda-forge hpccm
 Then, create the Dockerfile by running
 
 ```
-hpccm --recipe exp_all_deb.py --format docker > Dockerfile
+hpccm --recipe exp_all_deb_24.py --format docker > Dockerfile24
 ```
 
