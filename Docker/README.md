@@ -56,9 +56,10 @@ Dockerfile that we used to make the Docker Hub image for EXP.
 
 > [!WARN]  
 > The previous EXP Docker images tagged with `latest` are now
-> deprecated. The final `22.04` release in the `latest` series is
-> still available in DockerHub but is not recommended. We are
-> distributing the older ones until the newer ones have been
+> deprecated. Images with the 22.04 release are still available in
+> DockerHub, tagged as `22` and `latest` (for backward compatibility
+> with the original `expbox` script) but are not recommended. We are
+> distributing EXP builds with ones until the newer ones have been
 > thoroughly field tested. Please grab the latest version of `expbox`
 > [here](https://github.com/EXP-code/EXP-container/blob/main/Docker/expbox)
 > to automatically get the latest image.
