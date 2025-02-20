@@ -8,6 +8,8 @@ can easily be run anywhere. We provide examples for three strategies:
    EXP simulations is available on Docker Hub! Note that this container
    is designed to be run on a workstation or laptop -- _not_ a cluster.
    We also provide an HPCCM recipe and a Dockerfile for new builds.
+2. *Binder* - A BinderHub compatible with all you need to run EXP and
+   other widely used astronomy packages
 3. *Native* - EXP is built from source on the host and installed in
    the container
 4. *HPCCM* - EXP is built inside of the container using NVidia HPC
@@ -31,6 +33,7 @@ README](/Docker/README.md) for more details.
 | Directory    | Contents |
 | ---          | ---      |
 | Docker       | Recipe for building a docker image containing EXP, Jupyter, and standard Python packages |
+| Binder       | A Dockerfile that will work with BinderHub to automatically build and run EXP, JupyterLab, JupyterHub, and standard Python packages |
 | Native       | Apptainer definition files for various flavors |
 | HPCCM        | HPC Container Maker recipe for building EXP *inside* of a container image |
 
@@ -48,7 +51,7 @@ README](/Docker/README.md) for more details.
   CMake using `-DENABLE_SLURM=OFF` in the Apptainer definition file.
 
 - All examples have been built in the Ubuntu environment.  However we
-  successfully run an Ubuntu 22.04 container on a CentOS8-based
+  successfully run an Ubuntu 24.04 container on a CentOS8-based
   cluster.  Please consider contributing back any successful variants
   for other Linux distributions
 
