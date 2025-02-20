@@ -26,7 +26,13 @@ additional packages as needed
 - If your BinderHub server allows multiple cores, you will be able to
   use MPI and multi-threading automatically
 - You can explore (and use!) the same Docker image by building it locally with
-`docker build` command in a local directory containing the Dockerfile:
-```bash
-docker build -t binder-test .
-```
+  `docker build` command in a local directory containing the Dockerfile:
+  ```bash
+  docker build -t binder-test .
+  ```
+  For example, you can launch a Jupyter Notebook server from the
+  locally-built `binder-test` image at port 8901 with the following command:
+  ``` bash
+	  docker run -it --rm -p 8901:8901 binder-test jupyter notebook --NotebookApp.default_url=/lab/ --ip=0.0.0.0 --port=8901
+
+	```
