@@ -18,12 +18,14 @@ EXP.
 
 
 ## Tips and hints
-- Like all `BinderHub` instances, the user is `jovyan` by default.
+- Like all `BinderHub` instances, the user is `jovyan` by default
 - All Python packages are installed in a Python 3.12 virtual
-environment located in `/opt/venv` and is owned by `jovyan`
-- You may use `pip install` in a Jupyter cell or terminal to install
-additional packages as needed.
-- You can explore the Docker image by building it locally with
+environment located in `/opt/venv` which is owned by `jovyan`
+- This allows you to use `pip install` in a Jupyter cell or terminal to install
+additional packages as needed
+- If your BinderHub server allows multiple cores, you will be able to
+  use MPI and multi-threading automatically
+- You can explore (and use!) the same Docker image by building it locally with
 `docker build` command in a local directory containing the Dockerfile:
 ```bash
 docker build -t binder-test .
