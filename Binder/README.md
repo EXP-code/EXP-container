@@ -3,9 +3,9 @@
 This directory provides `Dockerfile` compatible with BinderHub for
 EXP.
 
-> [!Note]__
-> TL;DR: All you need is to drop this `Dockerfile` in a directory
-> that is part of the BinderHub repository and it will build.
+> [!NOTE]  
+> TL;DR: Drop this `Dockerfile` in a directory identified to BinderHub
+> as a repository and it will build!
 
 
 ## Directory contents
