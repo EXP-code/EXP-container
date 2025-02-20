@@ -5,7 +5,8 @@ EXP.
 
 > [!NOTE]  
 > TL;DR: Drop this `Dockerfile` in a directory identified to BinderHub
-> as a repository and it will build!
+> as a repository and it will pull in everything it needs from github
+> and build!
 
 
 ## Directory contents
