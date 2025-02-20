@@ -33,6 +33,6 @@ additional packages as needed
   For example, you can launch a Jupyter Notebook server from the
   locally-built `binder-test` image at port 8901 with the following command:
   ``` bash
-	  docker run -it --rm -p 8901:8901 binder-test jupyter notebook --NotebookApp.default_url=/lab/ --ip=0.0.0.0 --port=8901
+  docker run -it --rm -p 8901:8901 binder-test jupyter notebook --NotebookApp.default_url=/lab/ --ip=0.0.0.0 --port=8901
 
-	```
+  ```
