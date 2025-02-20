@@ -132,16 +132,19 @@ COPY --from=devel /usr/local/EXP/lib /usr/local/EXP/lib
 
 COPY --from=devel /usr/local/EXP/doc /var/www/html
 
-ENV PATH=/usr/local/EXP/bin:$PATH
+RUN python3 -m venv /opt/venv && \
+    . /opt/venv/bin/activate
+
+ENV PATH=/opt/venv/bin:/usr/local/EXP/bin:$PATH
 
 ENV LIBRARY_PATH=/usr/local/EXP/lib
 
 ENV LD_LIBRARY_PATH=/usr/local/EXP/lib
 
-ENV PYTHONPATH=/usr/local/EXP/lib/python3.12/site-packages
+ENV PYTHONPATH=/opt/venv/lib/python3.12/site-packages:/usr/local/EXP/lib/python3.12/site-packages
 
-RUN python3 -m venv /opt/venv && \
-    . /opt/venv/bin/activate
+RUN userdel -f ubuntu && \
+    rm -rf /home/ubuntu
 
 # pip
 RUN apt-get update -y && \
@@ -151,4 +154,4 @@ RUN apt-get update -y && \
         python3-setuptools \
         python3-wheel && \
     rm -rf /var/lib/apt/lists/*
-RUN /opt/venv/bin/pip3 --no-cache-dir install numpy scipy matplotlib jupyter h5py mpi4py PyYAML k3d pandas astropy gala galpy pynbody jupyterlab ipyparallel
+RUN /opt/venv/bin/pip3 --no-cache-dir install numpy scipy matplotlib jupyter h5py mpi4py PyYAML k3d pandas astropy gala galpy pynbody jupyterlab jupyterhub ipyparallel

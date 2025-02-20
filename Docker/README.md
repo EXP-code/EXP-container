@@ -50,17 +50,13 @@ Dockerfile that we used to make the Docker Hub image for EXP.
 > base. This OS version deprecates system-wide `pip install`, but it
 > is allowed and used to provide Python support. The latest stable
 > Ubuntu release, 24.04, disallows it altogether. Recent images are
-> built with 24.04 using global `venv` as recommended by Canonical. To
-> use the older _original_ version, this, grab the `expbox_old` script
-> and the images tagged with `22`.
+> built with 24.04 using global `venv` as recommended by Canonical.
 
 > [!WARNING]  
 > The previous EXP Docker images tagged with `latest` are now
-> deprecated. Images with the 22.04 release are still available in
-> DockerHub, tagged as `22` and `latest` (for backward compatibility
-> with the original `expbox` script) but are not recommended. We are
-> distributing EXP builds with ones until the newer ones have been
-> thoroughly field tested. Please grab the latest version of `expbox`
+> linked to the `24` image. Images with the 22.04 release are still available
+> in DockerHub, tagged as `22` but are not being updated. Please grab
+> the latest version of `expbox`
 > [here](https://github.com/EXP-code/EXP-container/blob/main/Docker/expbox)
 > to automatically get the latest image.
 
@@ -69,7 +65,6 @@ Dockerfile that we used to make the Docker Hub image for EXP.
 | File              | Contents |
 | ---               | ---      |
 | expbox            | The most recent Bash script for getting and running the EXP Docker image |
-| expbox_old        | The Bash script for the deprecated image using system-wide pip installs |
 | exp_all_deb_24.py | HPC Container Maker recipe for building EXP *inside* of a container image using the Ubuntu 24.04 image |
 | exp_all_deb_22.py | The deprecated HPC Container Maker recipe that uses system-wide pip installs |
 | Dockerfile24      | A Dockerfile to build the Ubuntu 24.04 produced by HPCCM, included for completeness |

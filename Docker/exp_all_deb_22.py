@@ -44,7 +44,7 @@ Stage0 += apt_get(ospackages=['libopenmpi-dev', 'openmpi-bin',
                               'libfftw3-dev', 'libhdf5-dev',
                               'libhdf5-103', 'libeigen3-dev',
                               'libpng-dev', 'python3-dev', 'wget',
-                              'git', 'tar', 'cmake', 'make'])
+                              'git', 'tar', 'make', 'cmake'])
 
 # Create a build directory and configure EXP.  The options below
 # should give you all that you need for most cases. Add additional
@@ -62,6 +62,7 @@ Stage0 += generic_cmake(
                 '-D CMAKE_INSTALL_PREFIX=/usr/local/EXP'],
     preconfigure=['git config --global --add safe.directory /var/tmp/EXP', 'git config --global --add safe.directory /var/tmp/EXP/extern/HighFive', 'git config --global --add safe.directory /var/tmp/EXP/extern/pybind11', 'git config --global --add safe.directory /var/tmp/EXP/extern/yaml-cpp', 'git config --global --add safe.directory /var/tmp/EXP/extern/HighFive/deps/catch2', 'mkdir -p /usr/local/EXP/doc', 'cp -a /var/tmp/EXP/sphinx/* /usr/local/EXP/doc'],
     prefix='/usr/local/EXP',
+    build_environment={'PATH': '/usr/local/bin:${PATH}'},
     runtime_environment={
         'LD_LIBRARY_PATH': '/usr/local/EXP/lib',
         'LIBRARY_PATH': '/usr/local/EXP/lib',
@@ -79,7 +80,7 @@ Stage1 += Stage0.runtime(_from='devel')
 
 Stage1 += compiler
 
-Stage1 += apt_get(ospackages=['libpython3.10-dev', 'libopenmpi-dev', 'openmpi-bin', 'less', 'libfftw3-3', 'libhdf5-dev', 'libhdf5-103', 'libhdf5-cpp-103', 'ffmpeg', 'nano', 'libgsl-dev', 'libeigen3-dev', 'python3.10-dev', 'dvipng', 'unzip', 'make', 'busybox', 'git'])
+Stage1 += apt_get(ospackages=['libpython3.10-dev', 'libopenmpi-dev', 'openmpi-bin', 'less', 'libfftw3-3', 'libhdf5-dev', 'libhdf5-103', 'libhdf5-cpp-103', 'ffmpeg', 'nano', 'libgsl-dev', 'libeigen3-dev', 'python3.10-dev', 'dvipng', 'unzip', 'make', 'cmake', 'busybox', 'git'])
 
 # Install EXP into the runtime image
 #
