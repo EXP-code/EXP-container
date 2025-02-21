@@ -262,6 +262,9 @@ docker exec "$NAME" /bin/bash -c "groupadd -f -g $GID $GROUP"
 # Attach to the container and add the host user
 docker exec "$NAME" /bin/bash -c "useradd -M -b $homedir -s /bin/bash -g $GID -u $UID $USER"
 
+# Give the new user ownership of the venv
+docker exec "$NAME" /bin/bash -c "chown -R $UID:$GID /opt/venv"
+
 # Start the web server
 docker exec -d $NAME /bin/bash --norc -c "busybox httpd -h /var/www/html"
 
