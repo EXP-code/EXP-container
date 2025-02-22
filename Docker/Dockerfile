@@ -123,6 +123,7 @@ RUN apt-get update -y && \
         python3-wheel \
         python3.12-dev \
         python3.12-venv \
+        rsync \
         unzip && \
     rm -rf /var/lib/apt/lists/*
 
@@ -155,3 +156,5 @@ RUN apt-get update -y && \
         python3-wheel && \
     rm -rf /var/lib/apt/lists/*
 RUN /opt/venv/bin/pip3 --no-cache-dir install numpy scipy matplotlib jupyter h5py mpi4py PyYAML k3d pandas astropy gala galpy pynbody jupyterlab jupyterhub ipyparallel
+
+RUN pip3 install --config-settings --build-option=--yes --no-build-isolation agama

@@ -97,7 +97,7 @@ Stage1 += apt_get(ospackages=['libpython3.12-dev', 'libopenmpi-dev',
                               'python3.12-venv', 'python3-pip',
                               'python3-wheel', 'python3-pip-whl',
                               'libvtk9-dev', 'dvipng', 'unzip',
-                              'make', 'busybox', 'git'])
+                              'make', 'busybox', 'git', 'rsync'])
 
 # Install EXP into the runtime image
 #
@@ -108,14 +108,24 @@ Stage1 += copy(_from='devel',
 Stage1 += copy(_from='devel',
                src='/usr/local/EXP/doc', dest='/var/www/html')
 
-# Add EXP to the path and library paths
+# Add Python venv
+Stage1 += shell(commands=['python3 -m venv /opt/venv', '. /opt/venv/bin/activate'])
+
+# Add Python and EXP to the path and library paths
 #
-Stage1 += environment(variables={'PATH': '/usr/local/EXP/bin:$PATH'})
+Stage1 += environment(variables={'PATH': '/opt/venv/bin:/usr/local/EXP/bin:$PATH'})
 Stage1 += environment(variables={'LIBRARY_PATH': '/usr/local/EXP/lib'})
 Stage1 += environment(variables={'LD_LIBRARY_PATH': '/usr/local/EXP/lib'})
+Stage1 += environment(variables={'PYTHONPATH': '/opt/venv/lib/python3.12/site-packages:/usr/local/EXP/lib/python3.12/site-packages'})
+
+# Remove ubuntu user from the container
+#
+Stage1 += shell(commands=['userdel -f ubuntu', 'rm -rf /home/ubuntu'])
 
 # Some packages needed or useful for running pyEXP
 #
-Stage1 += environment(variables={'PYTHONPATH': '/usr/local/EXP/lib/python3.12/site-packages'})
-Stage1 += shell(commands=['python3 -m venv /opt/venv', '. /opt/venv/bin/activate'])
-Stage1 += pip(packages=['numpy', 'scipy', 'matplotlib', 'jupyter', 'h5py', 'mpi4py', 'PyYAML', 'k3d', 'pandas', 'astropy', 'gala', 'galpy', 'pynbody', 'jupyterlab', 'ipyparallel'], pip='/opt/venv/bin/pip3', ospackages=['python3-pip', 'python3-setuptools', 'python3-wheel', 'python3-pip-whl'])
+Stage1 += pip(packages=['numpy', 'scipy', 'matplotlib', 'jupyter', 'h5py', 'mpi4py', 'PyYAML', 'k3d', 'pandas', 'astropy', 'gala', 'galpy', 'pynbody', 'jupyterlab', 'jupyterhub', 'ipyparallel'], pip='/opt/venv/bin/pip3', ospackages=['python3-pip', 'python3-setuptools', 'python3-wheel', 'python3-pip-whl'])
+
+# Work around for AGAMA
+#
+Stage1 += shell(commands=['pip3 install --config-settings --build-option=--yes --no-build-isolation agama'])

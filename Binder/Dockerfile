@@ -91,6 +91,7 @@ RUN apt-get update -y && \
         dvipng \
         ffmpeg \
         git \
+	rsync \
         less \
         libeigen3-dev \
         libfftw3-dev \
