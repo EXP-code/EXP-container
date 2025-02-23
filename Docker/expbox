@@ -249,22 +249,25 @@ echo "----"
 echo "---- The 'readthedocs' manual is included in this Docker container!"
 echo "---- Point at http://localhost:$WEBP or http://127.0.0.1:$WEBP to see it."
 echo "----"
-echo ""
+echo "---- Adding user $USER and changing ownership of the venv."
+echo "---- This may take a minute or two...so many Python packages"
 
 # Add a new home base
 if (( change_home > 0 )); then
     docker exec "$NAME" /bin/bash -c "mkdir -p $homedir" 
 fi
 
-# Remove the 'ubuntu' user and group to not interfere with legacy
-# Debian/Ubuntui uid/gid choices
-docker exec "$NAME" /bin/bash -c "userdel -f ubuntu"
-
 # Add the group (if the group exists this will exit, no problem)
 docker exec "$NAME" /bin/bash -c "groupadd -f -g $GID $GROUP"
 
 # Attach to the container and add the host user
 docker exec "$NAME" /bin/bash -c "useradd -M -b $homedir -s /bin/bash -g $GID -u $UID $USER"
+
+# Give the new user ownership of the venv
+docker exec "$NAME" /bin/bash -c "chown -R $UID:$GID /opt/venv"
+
+echo "----"
+echo "---- Starting the documentation web server"
 
 # Start the web server
 docker exec -d $NAME /bin/bash --norc -c "busybox httpd -h /var/www/html"
@@ -273,10 +276,10 @@ if ((terminal > 0)); then
     echo "----"
     echo "---- Beginning an interactive terminal session"
     echo "----"
-    docker exec -it --user $USER "$NAME" /bin/bash --norc -c "source /opt/venv/bin/activate && /bin/bash --norc"
+    docker exec -it --user $USER "$NAME" /bin/bash --norc
 else
     echo "----"
-    echo "---- Starting Jupyter for $USER"
+    echo "---- Starting Jupyter for user $USER"
     echo "----"
-    docker exec --user $USER "$NAME" /bin/bash --norc -c "source /opt/venv/bin/activate && jupyter $JTYPE --ip 0.0.0.0 --port=$PORT --no-browser"
+    docker exec --user $USER "$NAME" /bin/bash --norc -c "jupyter $JTYPE --ip 0.0.0.0 --port=$PORT --no-browser"
 fi

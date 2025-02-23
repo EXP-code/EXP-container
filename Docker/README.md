@@ -49,17 +49,13 @@ Dockerfile that we used to make the Docker Hub image for EXP.
 > base. This OS version deprecates system-wide `pip install`, but it
 > is allowed and used to provide Python support. The latest stable
 > Ubuntu release, 24.04, disallows it altogether. Recent images are
-> built with 24.04 using global `venv` as recommended by Canonical. To
-> use the older _original_ version, this, grab the `expbox_old` script
-> and the images tagged with `22`.
+> built with 24.04 using global `venv` as recommended by Canonical.
 
 > [!WARNING]  
 > The previous EXP Docker images tagged with `latest` are now
-> deprecated. Images with the 22.04 release are still available in
-> DockerHub, tagged as `22` and `latest` (for backward compatibility
-> with the original `expbox` script) but are not recommended. We are
-> distributing EXP builds with ones until the newer ones have been
-> thoroughly field tested. Please grab the latest version of `expbox`
+> linked to the `24` image. Images with the 22.04 release are still available
+> in DockerHub, tagged as `22` but are not being updated. Please grab
+> the latest version of `expbox`
 > [here](https://github.com/EXP-code/EXP-container/blob/main/Docker/expbox)
 > to automatically get the latest image.
 
@@ -68,10 +64,9 @@ Dockerfile that we used to make the Docker Hub image for EXP.
 | File              | Contents |
 | ---               | ---      |
 | expbox            | The most recent Bash script for getting and running the EXP Docker image |
-| expbox_old        | The Bash script for the deprecated image using system-wide pip installs |
-| exp_all_deb_24.py | HPC Container Maker recipe for building EXP *inside* of a container image using the Ubuntu 24.04 image |
+| exp_all_deb.py    | HPC Container Maker recipe for building EXP *inside* of a container image using the Ubuntu 24.04 image |
 | exp_all_deb_22.py | The deprecated HPC Container Maker recipe that uses system-wide pip installs |
-| Dockerfile24      | A Dockerfile to build the Ubuntu 24.04 produced by HPCCM, included for completeness |
+| Dockerfile        | A Dockerfile to build the Ubuntu 24.04 produced by HPCCM, included for completeness |
 | Dockerfile22      | A Dockerfile for the deprecated build, included for completeness |
 | README.md         | This document |
 
@@ -135,19 +130,18 @@ choose your own port # using the `-P <port>` flag.
   include `jupyterlab`, `matplotlib`, `numpy`, `scipy`, `pandas`,
   `mpi4py`, `h5py`, `pyYAML`, `astropy`, `galpy`, `k3d` and
   `ipyparallel`.
-- The `agama` package can be installed manually by starting a terminal
-  in your running container, for example 
-
-  ```
-  docker exec -it expbox_8888 /bin/bash 
-  ```
-
-  if your container is named `expbox_8888`.  Then, execute `pip
-  install agama` in the shell and answer the required interactive
-  prompts.
+- The `agama` package is also pre-installed in the latest 24.04 image.
+- The `expbox` script runs in the same user account that launched
+  it. This may result in your host shell profile being sourced.
+- All additional Python packages are installed in a virtual
+  environment located in `/opt/venv`. The current `expbox` launching
+  script gives the user ownership of this directory.
 - Additional packages can be installed by `pip install <package>`
   either manually or from a Jupyter cell using the `!pip install`
-  command.
+  command.   Your path will include `/opt/venv/bin/` by
+  default. However, if your host-side shell profile is sourced, you
+  may need to manually prepend `/opt/venv/bin/` to your path or source
+  `/opt/venv/bin/activate` to do this.
 
 ## Installing Docker
 
@@ -332,6 +326,6 @@ conda install -c conda-forge hpccm
 Then, create the Dockerfile by running
 
 ```
-hpccm --recipe exp_all_deb_24.py --format docker > Dockerfile24
+hpccm --recipe exp_all_deb.py --format docker > Dockerfile
 ```
 
