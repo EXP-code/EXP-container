@@ -44,6 +44,18 @@ those of you that want to make your own Docker image, please see
 to generate a Dockerfile from the Python recipe. We also supply the
 Dockerfile that we used to make the Docker Hub image for EXP.
 
+> [!NOTE]
+> If you are having trouble getting the container to work, please update
+> your Docker image using the command
+> ```
+> docker pull the9cat/exp:24
+> ```
+> and download the [latest version](https://github.com/EXP-code/EXP-container/blob/main/Docker/expbox)
+> of `expbox` and try again.  If that doesn't help, please document your problem in the EXP-container
+> [Issues](https://github.com/EXP-code/EXP-container/issues) tab. If the container works but the code
+> is not performing as expected, please document your problem at
+> at EXP [Issues](https://github.com/EXP-code/issues).
+
 > [!NOTE]  
 > The originally published EXP Docker image uses a Ubuntu 22.04
 > base. This OS version deprecates system-wide `pip install`, but it
