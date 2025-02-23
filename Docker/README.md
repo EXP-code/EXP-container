@@ -51,7 +51,14 @@ Dockerfile that we used to make the Docker Hub image for EXP.
 > Ubuntu release, 24.04, disallows it altogether. Recent images are
 > built with 24.04 using global `venv` as recommended by Canonical.
 
-> [!WARNING]  
+> [!NOTE]
+> If you are having trouble with `pip install` in your Docker container, try these first:
+> - Update your `expbox` script to the
+>   [latest version](https://github.com/EXP-code/EXP-container/blob/main/Docker/expbox)
+> - Make sure that your path has `/opt/venv/bin` before any other
+>   system path to ensure that it runs `/opt/venv/bin/pip`
+
+> [!NOTE]  
 > The previous EXP Docker images tagged with `latest` are now
 > linked to the `24` image. Images with the 22.04 release are still available
 > in DockerHub, tagged as `22` but are not being updated. Please grab
