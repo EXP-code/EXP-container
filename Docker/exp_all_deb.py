@@ -129,3 +129,11 @@ Stage1 += pip(packages=['numpy', 'scipy', 'matplotlib', 'jupyter', 'h5py', 'mpi4
 # Work around for AGAMA
 #
 Stage1 += shell(commands=['pip3 install --config-settings --build-option=--yes --no-build-isolation agama'])
+
+# Add EXP examples to /usr/local
+#
+Stage1 += shell(commands=['cd /usr/local',  'export GIT_SSL_NO_VERIFY=1', 'git clone https://github.com/EXP-code/EXP-examples EXP-examples', 'git clone https://github.com/EXP-code/pyEXP-examples pyEXP-examples', 'cd pyEXP-examples', 'git checkout MinorUpdates'])
+
+# Make data directories world read/write
+#
+Stage1 += shell(commands=['chmod -R 777 /opt/venv', 'chmod -R 777 /usr/local/pyEXP-examples', 'chmod -R 777 /usr/local/EXP-examples'])
