@@ -11,6 +11,7 @@ an optional initial working directory.
     -h          display this help and exit
     -l          launch Jupyter Lab (default: Jupyter Notebook)
     -t          start a user terminal
+    -T          Start in the tutorial directory
     -d wdir     position Jupyter in this directory to start (default: home)
     -i image    Docker image to use (default: 'the9cat/exp:24')
     -n name     Docker container name prefix (default: 'expbox')
@@ -20,6 +21,9 @@ an optional initial working directory.
 
 Start a Jupyter Notebook in your home directory:
      $ expbox
+
+Start a Jupyter Notebook to run the pyEXP Tutorials
+     $ expbox -T
 
 Start a Jupyter Lab in a specific directory under your home directory:
      $ expbox -l -d /home/user/datadir
@@ -76,6 +80,7 @@ EOF
 # Initialize variables
 
 working_dir=""
+start_page=""
 verbose=0
 terminal=0
 jupyter_lab=0
@@ -86,7 +91,7 @@ name="expbox"
 
 OPTIND=1
 
-while getopts hvltd:i:n:p:P: opt; do
+while getopts hvltTd:i:n:p:P: opt; do
     case $opt in
         h)
             show_help
@@ -97,6 +102,8 @@ while getopts hvltd:i:n:p:P: opt; do
         l)  jupyter_lab=1
             ;;
         t)  terminal=1
+            ;;
+        T)  start_page="/usr/local/pyEXP-examples/Tutorials/StartHere.ipynb"
             ;;
         d)  working_dir=$OPTARG
             ;;
@@ -249,8 +256,7 @@ echo "----"
 echo "---- The 'readthedocs' manual is included in this Docker container!"
 echo "---- Point at http://localhost:$WEBP or http://127.0.0.1:$WEBP to see it."
 echo "----"
-echo "---- Adding user $USER and changing ownership of the venv."
-echo "---- This may take a minute or two...so many Python packages"
+echo "---- Adding user $USER."
 
 # Add a new home base
 if (( change_home > 0 )); then
@@ -262,9 +268,6 @@ docker exec "$NAME" /bin/bash -c "groupadd -f -g $GID $GROUP"
 
 # Attach to the container and add the host user
 docker exec "$NAME" /bin/bash -c "useradd -M -b $homedir -s /bin/bash -g $GID -u $UID $USER"
-
-# Give the new user ownership of the venv
-docker exec "$NAME" /bin/bash -c "chown -R $UID:$GID /opt/venv"
 
 echo "----"
 echo "---- Starting the documentation web server"
@@ -281,5 +284,5 @@ else
     echo "----"
     echo "---- Starting Jupyter for user $USER"
     echo "----"
-    docker exec --user $USER "$NAME" /bin/bash --norc -c "jupyter $JTYPE --ip 0.0.0.0 --port=$PORT --no-browser"
+    docker exec --user $USER "$NAME" /bin/bash --norc -c "jupyter $JTYPE --ip 0.0.0.0 --port=$PORT --no-browser $start_page"
 fi
