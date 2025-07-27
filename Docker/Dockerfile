@@ -7,6 +7,7 @@
 #   * GNU compilers (upstream)
 #   * Python 2 and 3 (upstream)
 #   * OpenMPI, FFTW3, HDF5, Eigen3, PNG (upstream)
+#   * EXP, EXP-examples, pyEXP-examples, EXP-docs
 # 
 # Build notes:
 # 
@@ -35,6 +36,7 @@ RUN apt-get update -y && \
 RUN apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         2to3 \
+        ca-certificates \
         cmake \
         git \
         libeigen3-dev \
@@ -54,21 +56,18 @@ RUN apt-get update -y && \
         wget && \
     rm -rf /var/lib/apt/lists/*
 
-# EXP.tar.gz
-COPY EXP.tar.gz /var/tmp/EXP.tar.gz
-RUN mkdir -p /var/tmp && tar -x -f /var/tmp/EXP.tar.gz -C /var/tmp -z && \
+# https://github.com/EXP-code/EXP.git
+RUN mkdir -p /var/tmp && cd /var/tmp && git clone --depth=1 --branch SLboundaries https://github.com/EXP-code/EXP.git EXP && cd - && \
     cd /var/tmp/EXP && \
     git config --global --add safe.directory /var/tmp/EXP && \
     git config --global --add safe.directory /var/tmp/EXP/extern/HighFive && \
     git config --global --add safe.directory /var/tmp/EXP/extern/pybind11 && \
     git config --global --add safe.directory /var/tmp/EXP/extern/yaml-cpp && \
     git config --global --add safe.directory /var/tmp/EXP/extern/HighFive/deps/catch2 && \
-    mkdir -p /usr/local/EXP/doc && \
-    cp -a /var/tmp/EXP/sphinx/* /usr/local/EXP/doc && \
     mkdir -p /var/tmp/EXP/build && cd /var/tmp/EXP/build && cmake -DCMAKE_INSTALL_PREFIX=/usr/local/EXP -D CMAKE_BUILD_TYPE=Release -D ENABLE_CUDA=NO -D ENABLE_USER=YES -D ENABLE_SLURM=NO -D ENABLE_PNG=NO -D ENABLE_VTK=NO -D FFTW_INCLUDE_DIRS=/usr/include/fftw3 -D Eigen3_DIR=/usr/share/eigen3/cmake -D CMAKE_INSTALL_PREFIX=/usr/local/EXP /var/tmp/EXP && \
     cmake --build /var/tmp/EXP/build --target all -- -j$(nproc) && \
     cmake --build /var/tmp/EXP/build --target install -- -j$(nproc) && \
-    rm -rf /var/tmp/EXP /var/tmp/EXP.tar.gz
+    rm -rf /var/tmp/EXP
 
 FROM ubuntu:24.04
 
@@ -79,6 +78,7 @@ RUN apt-get update -y && \
         libgomp1 && \
     rm -rf /var/lib/apt/lists/*
 
+# https://github.com/EXP-code/EXP.git
 COPY --from=devel /usr/local/EXP /usr/local/EXP
 ENV LD_LIBRARY_PATH=/usr/local/EXP/lib \
     LIBRARY_PATH=/usr/local/EXP/lib \
@@ -124,14 +124,17 @@ RUN apt-get update -y && \
         python3.12-dev \
         python3.12-venv \
         rsync \
-        unzip && \
+        unzip \
+        wget && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=devel /usr/local/EXP/bin /usr/local/EXP/bin
 
 COPY --from=devel /usr/local/EXP/lib /usr/local/EXP/lib
 
-COPY --from=devel /usr/local/EXP/doc /var/www/html
+RUN mkdir -p /var/www/html && \
+    cd /var/www/html && \
+    wget -r -nH --cut-dirs=1 https://exp-code.github.io/EXP-docs/
 
 RUN python3 -m venv /opt/venv && \
     . /opt/venv/bin/activate
@@ -158,3 +161,16 @@ RUN apt-get update -y && \
 RUN /opt/venv/bin/pip3 --no-cache-dir install numpy scipy matplotlib jupyter h5py mpi4py PyYAML k3d pandas astropy gala galpy pynbody jupyterlab jupyterhub ipyparallel
 
 RUN pip3 install --config-settings --build-option=--yes --no-build-isolation agama
+
+RUN cd /usr/local && \
+    export GIT_SSL_NO_VERIFY=1 && \
+    git clone https://github.com/EXP-code/EXP-examples EXP-examples && \
+    git clone https://github.com/EXP-code/pyEXP-examples pyEXP-examples && \
+    git clone https://github.com/EXP-code/EXP-tools && \
+    cd pyEXP-examples && \
+    git checkout haloVel
+
+RUN chmod -R 777 /opt/venv && \
+    chmod -R 777 /usr/local/pyEXP-examples && \
+    chmod -R 777 /usr/local/EXP-examples && \
+    chmod -R 777 /usr/local/EXP-tools
