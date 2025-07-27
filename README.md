@@ -28,6 +28,13 @@ docker image, build a docker container, and run Jupyter or start an
 interactive shell.  Please take a quick look at our [Docker
 README](/Docker/README.md) for more details.
 
+[!NOTE] 
+This repository supports a Github Action to build the Docker images
+automatically from the `Dockerfile` in the `Docker` directory of this
+repository. The recipes here allow you to customize the container
+image.
+
+
 ## Organization
 
 | Directory    | Contents |
