@@ -25,6 +25,8 @@
 
 FROM ubuntu:24.04 AS devel
 
+ARG BRANCH=main
+
 # GNU compiler
 RUN apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -57,7 +59,7 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 
 # https://github.com/EXP-code/EXP.git
-RUN mkdir -p /var/tmp && cd /var/tmp && git clone --depth=1 --branch SLboundaries https://github.com/EXP-code/EXP.git EXP && cd - && \
+RUN mkdir -p /var/tmp && cd /var/tmp && git clone --depth=1 --branch $BRANCH https://github.com/EXP-code/EXP.git EXP && cd - && \
     cd /var/tmp/EXP && \
     git config --global --add safe.directory /var/tmp/EXP && \
     git config --global --add safe.directory /var/tmp/EXP/extern/HighFive && \
