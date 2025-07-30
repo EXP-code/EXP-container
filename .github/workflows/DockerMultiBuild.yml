@@ -2,13 +2,23 @@ name: Build Docker images on native runners
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - Ubuntu24
+    inputs:
+      branch:
+        description: 'EXP branch name'
+        required: true
+        default: 'main'
+        type: choice
+        options:
+          - main
+          - devel
+      tag:
+        description: 'Docker image tag'
+        default: '24'
+        required: true
+        type: string
 
 env:
   REGISTRY_IMAGE: the9cat/exp   # The image name
-  TAG: 24                       # The image tag
 
 jobs:
   build:
@@ -35,8 +45,8 @@ jobs:
       - name: Build and push Docker image
         run: |
           cd Docker
-          docker build --platform linux/${{ matrix.platform }} --build-arg BRANCH=${{ vars.EXP_BRANCH }} -t ${{ env.REGISTRY_IMAGE }}:${{ env.TAG }}-${{ matrix.platform }} .
-          docker push ${{ env.REGISTRY_IMAGE }}:${{ env.TAG }}-${{ matrix.platform }}
+          docker build --platform linux/${{ matrix.platform }} --build-arg BRANCH=${{ vars.EXP_BRANCH }} -t ${{ env.REGISTRY_IMAGE }}:${{ inputs.tag }}-${{ matrix.platform }} .
+          docker push ${{ env.REGISTRY_IMAGE }}:${{ inputs.tag }}-${{ matrix.platform }}
 
   post-build:
     needs: build
@@ -50,7 +60,7 @@ jobs:
 
       - name: Create and Push Multiarch Manifest
         run: |
-          docker manifest create ${{ env.REGISTRY_IMAGE }}:${{ env.TAG }} \
-          ${{ env.REGISTRY_IMAGE }}:${{ env.TAG }}-amd64 \
-          ${{ env.REGISTRY_IMAGE }}:${{ env.TAG }}-arm64
-          docker manifest push ${{ env.REGISTRY_IMAGE }}:${{ env.TAG }}
+          docker manifest create ${{ env.REGISTRY_IMAGE }}:${{ inputs.tag }} \
+          ${{ env.REGISTRY_IMAGE }}:${{ inputs.tag }}-amd64 \
+          ${{ env.REGISTRY_IMAGE }}:${{ inputs.tag }}-arm64
+          docker manifest push ${{ env.REGISTRY_IMAGE }}:${{ inputs.tag }}
