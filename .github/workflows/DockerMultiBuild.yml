@@ -5,12 +5,9 @@ on:
     inputs:
       branch:
         description: 'EXP branch name'
-        required: true
         default: 'main'
-        type: choice
-        options:
-          - main
-          - devel
+        required: true
+        type: string
       tag:
         description: 'Docker image tag'
         default: '24'
