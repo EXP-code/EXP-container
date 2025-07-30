@@ -1,9 +1,8 @@
 # Docker
 
-We provide a premade Docker container for Jupyter notebooks and
-Jupyter lab, hosted by the Docker Hub. No building necessary.  All you
-need is the [expbox](/Docker/expbox) script from this directory and
-`docker`.
+We provide premade Docker containers for Jupyter notebooks and Jupyter
+lab, hosted by the Docker Hub. No building necessary.  All you need is
+the [expbox](/Docker/expbox) script from this directory and `docker`.
 
 If you do not have `docker` installed on your workstation or laptop,
 you will need to do that first. See the [Installing
@@ -15,8 +14,9 @@ running the container.  The Desktop version is the preferred
 installation for Windows.
 
 The EXP images on Docker Hub are labeled by a short git commit hash.
-In addition, the latest build is tagged either `24`, `22` or perhaps a
-custom tag for a particular bug fix or feature.  You will
+In addition, the latest build is tagged either `24`, `22` for the
+latest `main` branch builds, `devel` for a development branch build,
+or perhaps a custom tag for a particular bug fix or feature.  You will
 automatically get the latest build of the `24` image the first time
 you run the `expbox` script. After that first download, your Docker
 image *will not* be automatically updated from the Hub.  To retrieve
@@ -303,7 +303,7 @@ sudo apt install docker-ce docker-ce-cli containerd.io
 
 
 
-## Building a Docker image
+## Building your own Docker image locally
 
 Both a Dockerfile and an HPCCM recipe for making that Dockerfile is
 provided here.
@@ -348,3 +348,18 @@ Then, create the Dockerfile by running
 hpccm --recipe exp_all_deb.py --format docker > Dockerfile
 ```
 
+## Building a new Docker Hub image
+
+All collaboration members with read/write access to the repository can
+trigger and run the workflow to build a new Docker image. Go to the
+`Actions` tab in the repository and select the `Build Docker images on
+native runners` workflow from the left-hand menu. Click on the `Run
+workflow` button at the top of the build history panel and enter the
+`exp` branch name and desired `tag` for the new image build. The
+default values are `main` for the current stable branch with `24`.
+For custom branches and tags, don't forget that you will need to
+specify the custom `tag` to the [expbox](/Docker/expbox) script.
+
+If you do not have read/write access to the repository and need a
+Docker image for particular version of `exp`, please request this by
+starting at `Github issue` in the EXP repo.
