@@ -66,7 +66,13 @@ Stage0 += generic_cmake(
                 '-D FFTW_INCLUDE_DIRS=/usr/include/fftw3',
                 '-D Eigen3_DIR=/usr/share/eigen3/cmake',
                 '-D CMAKE_INSTALL_PREFIX=/usr/local/EXP'],
-    preconfigure=['git config --global --add safe.directory /var/tmp/EXP', 'git config --global --add safe.directory /var/tmp/EXP/extern/HighFive', 'git config --global --add safe.directory /var/tmp/EXP/extern/pybind11', 'git config --global --add safe.directory /var/tmp/EXP/extern/yaml-cpp', 'git config --global --add safe.directory /var/tmp/EXP/extern/HighFive/deps/catch2'],
+    preconfigure=[
+        'git config --global --add safe.directory /var/tmp/EXP',
+        'git config --global --add safe.directory /var/tmp/EXP/extern/HighFive',
+        'git config --global --add safe.directory /var/tmp/EXP/extern/pybind11',
+        'git config --global --add safe.directory /var/tmp/EXP/extern/yaml-cpp',
+        'git config --global --add safe.directory /var/tmp/EXP/extern/HighFive/deps/catch2'
+    ],
     prefix='/usr/local/EXP',
     runtime_environment={
         'LD_LIBRARY_PATH': '/usr/local/EXP/lib',
@@ -110,7 +116,7 @@ Stage1 += copy(_from='devel',
 Stage1 += copy(_from='devel',
                src='/usr/local/EXP/lib', dest='/usr/local/EXP/lib')
 
-# Copy documentation from Github Pages
+# Copy documentation from GitHub Pages
 #
 Stage1 += shell(commands=['mkdir -p /var/www/html', 'cd /var/www/html', 'wget -r -nH --cut-dirs=1 https://exp-code.github.io/EXP-docs/'])
 
