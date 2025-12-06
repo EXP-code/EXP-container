@@ -110,7 +110,7 @@ Stage1 += copy(_from='devel',
 Stage1 += copy(_from='devel',
                src='/usr/local/EXP/lib', dest='/usr/local/EXP/lib')
 
-# Copy documentation from Github Pages
+# Copy documentation from GitHub Pages
 #
 Stage1 += shell(commands=['mkdir -p /var/www/html', 'cd /var/www/html', 'wget -r -nH --cut-dirs=1 https://exp-code.github.io/EXP-docs/'])
 
