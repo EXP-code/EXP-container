@@ -73,8 +73,8 @@ Dockerfile that we used to make the Docker Hub image for EXP.
 > [!NOTE]  
 > The previous EXP Docker images tagged with `latest` are now
 > linked to the `24` image. Images with the 22.04 release are still available
-> in DockerHub, tagged as `22` but are not being updated. Please grab
-> the latest version of `expbox`
+> in DockerHub, tagged as `22` but are not being updated, tested, or
+> supported. Please grab the latest version of `expbox`
 > [here](https://github.com/EXP-code/EXP-container/blob/main/Docker/expbox)
 > to automatically get the latest image.
 
