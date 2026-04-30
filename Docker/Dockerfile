@@ -17,6 +17,9 @@
 #   or
 #     $ docker buildx build --platform=linux/amd64,linux/arm64 -t the9cat/exp:latest --push -f Dockerfile .
 # 
+#   * You may requiest a particular branch_name using:
+#     $ hpccm --recipe exp_all_deb.py --format docker --userarg branch=branch_name > Dockerfile
+# 
 #   * You will need to put the EXP.tar.gz file in the build directory. I
 #     like to make a fresh clone and run `git submodule update --init
 #     --recursive` before tarring it up.
@@ -24,8 +27,6 @@
 # 
 
 FROM ubuntu:24.04 AS devel
-
-ARG BRANCH=main
 
 # GNU compiler
 RUN apt-get update -y && \
@@ -59,7 +60,7 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 
 # https://github.com/EXP-code/EXP.git
-RUN mkdir -p /var/tmp && cd /var/tmp && git clone --depth=1 --branch $BRANCH https://github.com/EXP-code/EXP.git EXP && cd - && \
+RUN mkdir -p /var/tmp && cd /var/tmp && git clone --depth=1 --branch main https://github.com/EXP-code/EXP.git EXP && cd - && \
     cd /var/tmp/EXP && \
     git config --global --add safe.directory /var/tmp/EXP && \
     git config --global --add safe.directory /var/tmp/EXP/extern/HighFive && \
@@ -134,7 +135,7 @@ COPY --from=devel /usr/local/EXP/bin /usr/local/EXP/bin
 
 COPY --from=devel /usr/local/EXP/lib /usr/local/EXP/lib
 
-COPY --from=devel /usr/local/EXP/include /usr/local/EXP/include 
+COPY --from=devel /usr/local/EXP/include /usr/local/EXP/include
 
 RUN mkdir -p /var/www/html && \
     cd /var/www/html && \
@@ -162,13 +163,11 @@ RUN apt-get update -y && \
         python3-setuptools \
         python3-wheel && \
     rm -rf /var/lib/apt/lists/*
-
-RUN /opt/venv/bin/pip3 --no-cache-dir install numpy scipy matplotlib jupyter h5py mpi4py PyYAML k3d pandas astropy galpy pynbody jupyterlab jupyterhub ipyparallel
+RUN /opt/venv/bin/pip3 --no-cache-dir install numpy scipy matplotlib jupyter h5py mpi4py PyYAML pandas astropy galpy pynbody jupyterlab jupyterlab_widgets ipywidgets k3d==2.16.1 jupyterhub ipyparallel
 
 RUN pip3 install --config-settings --build-option=--yes --no-build-isolation agama
 
-# Install gala from source with EXP support
-RUN cd /usr/local && \ 
+RUN cd /usr/local && \
     export GIT_SSL_NO_VERIFY=1 && \
     git clone https://github.com/adrn/gala.git && \
     cd gala && \
