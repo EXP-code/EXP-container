@@ -42,7 +42,9 @@ jobs:
       - name: Build and push Docker image
         run: |
           cd Docker
-          docker build --platform linux/${{ matrix.platform }} --build-arg BRANCH=${{ vars.EXP_BRANCH }} -t ${{ env.REGISTRY_IMAGE }}:${{ inputs.tag }}-${{ matrix.platform }} .
+          pip install hpccm
+          hpccm --recipe exp_all_deb.py --format docker --userarg branch=${{ vars.EXP_BRANCH}} > Dockerfile
+          docker build --platform linux/${{ matrix.platform }} -t ${{ env.REGISTRY_IMAGE }}:${{ inputs.tag }}-${{ matrix.platform }} .
           docker push ${{ env.REGISTRY_IMAGE }}:${{ inputs.tag }}-${{ matrix.platform }}
 
   post-build:
