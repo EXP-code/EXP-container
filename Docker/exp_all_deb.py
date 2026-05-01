@@ -17,6 +17,9 @@ Build notes:
   or
     $ docker buildx build --platform=linux/amd64,linux/arm64 -t the9cat/exp:latest --push -f Dockerfile .
 
+  * You may requiest a particular branch_name using:
+    $ hpccm --recipe exp_all_deb.py --format docker --userarg branch=branch_name > Dockerfile
+
   * You will need to put the EXP.tar.gz file in the build directory. I
     like to make a fresh clone and run `git submodule update --init
     --recursive` before tarring it up.
@@ -28,6 +31,8 @@ runtime_image = 'ubuntu:24.04'
 ##############
 # Devel stage
 ##############
+
+BRANCH = USERARG.get('branch', 'devel')
 
 Stage0 += comment(__doc__, reformat=False)
 
@@ -80,7 +85,7 @@ Stage0 += generic_cmake(
         'PATH': '/usr/local/EXP/bin:${PATH}'},
     repository='https://github.com/EXP-code/EXP.git',
     repository_submodules=True,
-    branch='devel'
+    branch=BRANCH
 )
 
 ################
@@ -115,6 +120,8 @@ Stage1 += copy(_from='devel',
                src='/usr/local/EXP/bin', dest='/usr/local/EXP/bin')
 Stage1 += copy(_from='devel',
                src='/usr/local/EXP/lib', dest='/usr/local/EXP/lib')
+Stage1 += copy(_from='devel',
+                src='/usr/local/EXP/include', dest='/usr/local/EXP/include')
 
 # Copy documentation from GitHub Pages
 #
@@ -137,15 +144,19 @@ Stage1 += shell(commands=['userdel -f ubuntu', 'rm -rf /home/ubuntu'])
 
 # Some packages needed or useful for running pyEXP
 #
-Stage1 += pip(packages=['numpy', 'scipy', 'matplotlib', 'jupyter', 'h5py', 'mpi4py', 'PyYAML', 'pandas', 'astropy', 'gala', 'galpy', 'pynbody', 'jupyterlab', 'jupyterlab_widgets', 'ipywidgets', 'k3d==2.16.1', 'jupyterhub', 'ipyparallel'], pip='/opt/venv/bin/pip3', ospackages=['python3-pip', 'python3-setuptools', 'python3-wheel', 'python3-pip-whl'])
+Stage1 += pip(packages=['numpy', 'scipy', 'matplotlib', 'jupyter', 'h5py', 'mpi4py', 'PyYAML', 'pandas', 'astropy', 'galpy', 'pynbody', 'jupyterlab', 'jupyterlab_widgets', 'ipywidgets', 'k3d==2.16.1', 'jupyterhub', 'ipyparallel'], pip='/opt/venv/bin/pip3', ospackages=['python3-pip', 'python3-setuptools', 'python3-wheel', 'python3-pip-whl'])
 
 # Work around to install AGAMA
 #
 Stage1 += shell(commands=['pip3 install --config-settings --build-option=--yes --no-build-isolation agama'])
 
+# Build Gala with EXP support
+#
+Stage1 += shell(commands=['cd /usr/local', 'export GIT_SSL_NO_VERIFY=1', 'git clone https://github.com/adrn/gala.git', 'cd gala', 'export GALA_EXP_PREFIX=/usr/local/EXP/', 'python3 -m pip install -ve .'])
+
 # Add EXP examples to /usr/local
 #
-Stage1 += shell(commands=['cd /usr/local',  'export GIT_SSL_NO_VERIFY=1', 'git clone https://github.com/EXP-code/EXP-examples EXP-examples', 'git clone https://github.com/EXP-code/pyEXP-examples pyEXP-examples', 'git clone https://github.com/EXP-code/EXP-tools', 'cd pyEXP-examples', 'git checkout develcompatibility'])
+Stage1 += shell(commands=['cd /usr/local',  'export GIT_SSL_NO_VERIFY=1', 'git clone https://github.com/EXP-code/EXP-examples EXP-examples', 'git clone https://github.com/EXP-code/pyEXP-examples pyEXP-examples', 'git clone https://github.com/EXP-code/EXP-tools'])
 
 # Make data directories world read/write
 #

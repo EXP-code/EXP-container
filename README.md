@@ -69,4 +69,5 @@ README](/Docker/README.md) for more details.
 - The Docker container includes an internal MPI installation without
   Cuda and many more Python packages preinstalled, including:
   `jupyterlab`, `matplotlib`, `numpy`, `scipy`, `pandas`, `mpi4py`,
-  `h5py`, `pyYAML`, `astropy`, `galpy`, `k3d` and `ipyparallel`.
+  `h5py`, `pyYAML`, `gala` with EXP support, `astropy`, `galpy`, `k3d`
+  and `ipyparallel`.
